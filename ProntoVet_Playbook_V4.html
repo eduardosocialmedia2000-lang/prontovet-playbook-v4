@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playbook Comercial V4 — ProntoVet</title>
+<style>
+  :root {
+    --verde: #2a9050;
+    --verde-escuro: #1e6b3c;
+    --verde-claro: #e8f5ee;
+    --verde-medio: #c2e5cf;
+    --preto: #1a1a1a;
+    --cinza-escuro: #2c2c2c;
+    --cinza: #555;
+    --cinza-claro: #f5f5f5;
+    --branco: #ffffff;
+    --amarelo: #f5c842;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f0f4f2;
+    color: var(--preto);
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--preto) 0%, var(--cinza-escuro) 50%, #1e4d2e 100%);
+    color: var(--branco);
+    padding: 64px 32px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(42,144,80,0.25) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(42,144,80,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .logo-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--branco);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+  }
+  .logo-icon svg {
+    width: 46px;
+    height: 46px;
+  }
+  .logo-text {
+    text-align: left;
+  }
+  .logo-text .pronto {
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--branco);
+    letter-spacing: 1px;
+  }
+  .logo-text .vet {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--verde);
+    letter-spacing: 1px;
+  }
+  .logo-text .subtag {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: var(--verde);
+    color: var(--branco);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .hero h1 span { color: var(--verde); }
+  .hero .hero-sub {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+    max-width: 520px;
+    margin: 0 auto 36px;
+  }
+  .pillars-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .pillar-chip {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.85);
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+  }
+  .pillar-chip.active {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: var(--branco);
+    font-weight: 700;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── OBJETIVO ── */
+  .objetivo-section {
+    background: var(--branco);
+    padding: 56px 24px;
+  }
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .section-label .dot {
+    width: 10px; height: 10px;
+    background: var(--verde);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .section-label span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--verde);
+  }
+  .section-title {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--preto);
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+
+  .objetivo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .objetivo-card {
+    background: var(--verde-claro);
+    border-left: 4px solid var(--verde);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .objetivo-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .objetivo-card p { font-size: 0.9rem; color: var(--cinza-escuro); line-height: 1.4; }
+
+  /* ── O QUE MUDA ── */
+  .muda-section {
+    background: var(--verde-claro);
+    padding: 56px 24px;
+  }
+  .muda-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 600px) {
+    .muda-cols { grid-template-columns: 1fr; }
+  }
+  .muda-box {
+    background: var(--branco);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .muda-box h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: var(--cinza);
+  }
+  .muda-box.aprendeu h3 { color: var(--cinza); }
+  .muda-box.foco h3 { color: var(--verde-escuro); }
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .check-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--cinza-escuro);
+  }
+  .check-list li .ck {
+    width: 20px; height: 20px;
+    background: var(--verde);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .check-list li .ck svg { width: 10px; height: 10px; }
+  .check-list.old li .ck { background: #ccc; }
+
+  /* ── MÓDULOS ── */
+  .modulos-section { padding: 56px 24px; background: var(--cinza-claro); }
+
+  .modulo-card {
+    background: var(--branco);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+  .modulo-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 28px;
+    background: var(--preto);
+    color: var(--branco);
+  }
+  .modulo-num {
+    width: 42px; height: 42px;
+    background: var(--verde);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .modulo-header h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .modulo-header p {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.55);
+    margin-top: 2px;
+  }
+  .modulo-body { padding: 28px; }
+
+  .regra-box {
+    background: var(--verde-claro);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--verde);
+  }
+  .regra-box .label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--verde-escuro);
+    margin-bottom: 8px;
+  }
+  .regra-box p { font-size: 0.9rem; color: var(--cinza-escuro); line-height: 1.5; }
+
+  .evitar-usar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 500px) {
+    .evitar-usar { grid-template-columns: 1fr; }
+    .modulo-header { flex-direction: column; align-items: flex-start; }
+  }
+  .eu-box {
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .eu-box.evitar { background: #fff0f0; border-left: 3px solid #e05555; }
+  .eu-box.usar { background: var(--verde-claro); border-left: 3px solid var(--verde); }
+  .eu-box .eu-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .eu-box.evitar .eu-label { color: #c0392b; }
+  .eu-box.usar .eu-label { color: var(--verde-escuro); }
+  .eu-box ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .eu-box ul li {
+    font-size: 0.84rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    line-height: 1.3;
+  }
+  .eu-box.evitar ul li { background: rgba(224,85,85,0.08); color: #c0392b; }
+  .eu-box.usar ul li { background: rgba(42,144,80,0.1); color: var(--verde-escuro); }
+
+  .exemplos-box { margin-top: 8px; }
+  .exemplos-box .ex-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cinza);
+    margin-bottom: 12px;
+  }
+  .exemplo-item {
+    margin-bottom: 14px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .ex-trigger {
+    background: var(--cinza-claro);
+    padding: 8px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--cinza);
+    border-radius: 6px 6px 0 0;
+  }
+  .ex-resposta {
+    background: var(--verde-claro);
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    color: var(--cinza-escuro);
+    line-height: 1.5;
+    border-radius: 0 0 6px 6px;
+    font-style: italic;
+    border-left: 3px solid var(--verde);
+  }
+
+  /* agenda organização */
+  .agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .agenda-item {
+    border-radius: 10px;
+    padding: 16px;
+    background: var(--verde-claro);
+    border-top: 3px solid var(--verde);
+  }
+  .agenda-item .ai-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--verde-escuro);
+    margin-bottom: 6px;
+  }
+  .agenda-item p { font-size: 0.84rem; color: var(--cinza-escuro); line-height: 1.4; }
+
+  /* checklist */
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--verde-claro);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .checklist-item .cb {
+    width: 22px; height: 22px;
+    border: 2px solid var(--verde);
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .checklist-item p { font-size: 0.86rem; color: var(--cinza-escuro); line-height: 1.3; }
+
+  /* indicadores */
+  .indicadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  .ind-card {
+    background: var(--preto);
+    border-radius: 12px;
+    padding: 20px;
+    color: var(--branco);
+    border-top: 3px solid var(--verde);
+  }
+  .ind-card .ind-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--verde);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .ind-card .ind-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .ind-card .ind-desc {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.3;
+  }
+
+  /* rotina semanal */
+  .rotina-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 600px) {
+    .rotina-grid { grid-template-columns: 1fr; }
+  }
+  .rotina-dia {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .rotina-dia-header {
+    background: var(--verde);
+    color: var(--branco);
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .rotina-dia-body {
+    background: var(--branco);
+    border: 1px solid var(--verde-medio);
+    padding: 14px 16px;
+    border-radius: 0 0 12px 12px;
+  }
+  .rotina-dia-body ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .rotina-dia-body ul li {
+    font-size: 0.82rem;
+    color: var(--cinza-escuro);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .rotina-dia-body ul li::before {
+    content: '→';
+    color: var(--verde);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* responsabilidades */
+  .resp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 560px) {
+    .resp-grid { grid-template-columns: 1fr; }
+  }
+  .resp-card {
+    background: var(--branco);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .resp-card-header {
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--branco);
+  }
+  .resp-card-header.recepcao { background: var(--verde); }
+  .resp-card-header.doutor { background: var(--cinza-escuro); }
+  .resp-card-body { padding: 16px 20px; }
+  .resp-card-body ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .resp-card-body ul li {
+    font-size: 0.85rem;
+    color: var(--cinza-escuro);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .resp-card-body ul li::before {
+    content: '•';
+    color: var(--verde);
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  /* regras de ouro */
+  .ouro-section {
+    background: var(--preto);
+    padding: 56px 24px;
+    color: var(--branco);
+  }
+  .ouro-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ouro-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 18px 22px;
+    border-left: 4px solid var(--verde);
+  }
+  .ouro-num {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--verde);
+    flex-shrink: 0;
+    line-height: 1;
+    width: 28px;
+    text-align: right;
+  }
+  .ouro-item p {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* resultado esperado */
+  .resultado-section {
+    background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde) 100%);
+    padding: 56px 24px;
+    color: var(--branco);
+    text-align: center;
+  }
+  .resultado-section .section-title { color: var(--branco); margin-bottom: 12px; }
+  .resultado-section .sub { color: rgba(255,255,255,0.75); font-size: 0.9rem; margin-bottom: 36px; }
+  .resultado-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    max-width: 800px;
+    margin: 0 auto 48px;
+  }
+  .resultado-item {
+    background: rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 18px 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .resultado-item .ri-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .resultado-item p { font-size: 0.82rem; line-height: 1.3; }
+
+  /* pilares finais */
+  .pilares-finais {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  @media (max-width: 600px) {
+    .pilares-finais { grid-template-columns: repeat(2, 1fr); }
+  }
+  .pilar-final {
+    background: rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 16px 12px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .pilar-final .pf-ver {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 4px;
+  }
+  .pilar-final .pf-num {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--branco);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .pilar-final p { font-size: 0.72rem; color: rgba(255,255,255,0.75); line-height: 1.3; }
+  .pilar-final.destaque { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+
+  /* footer */
+  .footer {
+    background: var(--preto);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 24px;
+    font-size: 0.75rem;
+  }
+  .footer strong { color: rgba(255,255,255,0.7); }
+
+  /* pergunta semanal */
+  .perguntas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .perg-item {
+    background: var(--branco);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+  .perg-item .pq {
+    width: 28px; height: 28px;
+    background: var(--verde);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--branco);
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .perg-item p { font-size: 0.84rem; color: var(--cinza-escuro); line-height: 1.4; }
+
+  /* confirmacao */
+  .msg-box {
+    background: var(--verde-claro);
+    border: 1px solid var(--verde-medio);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .msg-box .mb-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--verde-escuro);
+    margin-bottom: 8px;
+  }
+  .msg-box p { font-size: 0.88rem; color: var(--cinza-escuro); line-height: 1.5; font-style: italic; }
+  .msg-box p.alt { font-style: normal; margin-top: 8px; }
+
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="container">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <!-- Logo ProntoVet: cruz verde + silhueta cão -->
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Cruz veterinária -->
+          <rect x="38" y="8" width="24" height="84" rx="6" fill="#2a9050"/>
+          <rect x="8" y="38" width="84" height="24" rx="6" fill="#2a9050"/>
+          <!-- Silhueta cão estilizada -->
+          <ellipse cx="52" cy="48" rx="14" ry="10" fill="#1a1a1a"/>
+          <ellipse cx="44" cy="38" rx="7" ry="8" fill="#1a1a1a"/>
+          <ellipse cx="38" cy="33" rx="4" ry="6" fill="#1a1a1a" transform="rotate(-20 38 33)"/>
+          <ellipse cx="52" cy="33" rx="3" ry="5" fill="#1a1a1a" transform="rotate(10 52 33)"/>
+          <rect x="40" y="55" width="5" height="12" rx="2" fill="#1a1a1a"/>
+          <rect x="48" y="55" width="5" height="12" rx="2" fill="#1a1a1a"/>
+          <rect x="56" y="55" width="5" height="12" rx="2" fill="#1a1a1a"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <div><span class="pronto">Pronto</span><span class="vet">Vet</span></div>
+        <div class="subtag">Clínica Veterinária</div>
+      </div>
+    </div>
+
+    <div class="hero-badge">Playbook Comercial</div>
+    <h1>Versão <span>4</span> — Conversão,<br>Agenda Viva e Indicadores</h1>
+    <p class="hero-sub">A etapa que transforma o processo comercial da ProntoVet em rotina permanente.</p>
+    <div class="pillars-row">
+      <span class="pillar-chip">V1 · Atendimento</span>
+      <span class="pillar-chip">V2 · Follow-up</span>
+      <span class="pillar-chip">V3 · Base Ativa</span>
+      <span class="pillar-chip active">V4 · Conversão & Agenda ✓</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── OBJETIVO ── -->
+<section class="objetivo-section">
+  <div class="container">
+    <div class="section-label"><div class="dot"></div><span>Objetivo deste Playbook</span></div>
+    <h2 class="section-title">Por que este playbook foi criado</h2>
+    <div class="objetivo-grid">
+      <div class="objetivo-card">
+        <div class="icon">📈</div>
+        <p>Converter melhor os contatos em consulta</p>
+      </div>
+      <div class="objetivo-card">
+        <div class="icon">📅</div>
+        <p>Reduzir buracos na agenda</p>
+      </div>
+      <div class="objetivo-card">
+        <div class="icon">🔔</div>
+        <p>Diminuir faltas e esquecimentos</p>
+      </div>
+      <div class="objetivo-card">
+        <div class="icon">📊</div>
+        <p>Acompanhar os números principais da clínica</p>
+      </div>
+      <div class="objetivo-card">
+        <div class="icon">🔓</div>
+        <p>Funcionar com menos dependência do Dr. Marcos</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── O QUE MUDA ── -->
+<section class="muda-section">
+  <div class="container">
+    <div class="section-label"><div class="dot"></div><span>O que muda a partir de agora</span></div>
+    <h2 class="section-title">Evolução do processo</h2>
+    <div class="muda-cols">
+      <div class="muda-box aprendeu">
+        <h3>Já foi aprendido</h3>
+        <ul class="check-list old">
+          <li><span class="ck"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></span>Como atender melhor</li>
+          <li><span class="ck"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></span>Como fazer follow-up</li>
+          <li><span class="ck"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></span>Como reativar clientes antigos</li>
+        </ul>
+      </div>
+      <div class="muda-box foco">
+        <h3>Foco agora</h3>
+        <ul class="check-list">
+          <li><span class="ck"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></span>Fechar mais consultas</li>
+          <li><span class="ck"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></span>Organizar a agenda</li>
+          <li><span class="ck"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></span>Acompanhar o essencial</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MÓDULOS ── -->
+<section class="modulos-section">
+  <div class="container">
+    <div class="section-label"><div class="dot"></div><span>Módulos do Playbook</span></div>
+    <h2 class="section-title">O que aplicar no dia a dia</h2>
+
+    <!-- 1. CONVERSÃO -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">1</div>
+        <div>
+          <h2>Conversão: Como levar o cliente para a decisão</h2>
+          <p>O objetivo do atendimento não é apenas responder — é conduzir para uma ação</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="regra-box">
+          <div class="label">Regra principal</div>
+          <p>Toda conversa deve terminar com uma ação clara: agendar consulta, agendar avaliação, confirmar procedimento ou definir próximo passo.</p>
+        </div>
+
+        <div class="evitar-usar">
+          <div class="eu-box evitar">
+            <div class="eu-label">❌ Evitar</div>
+            <ul>
+              <li>"O valor é X"</li>
+              <li>"Pode vir aqui"</li>
+              <li>"Qualquer coisa me chama"</li>
+              <li>"Vou ver com o doutor"</li>
+            </ul>
+          </div>
+          <div class="eu-box usar">
+            <div class="eu-label">✅ Usar</div>
+            <ul>
+              <li>"Posso verificar um horário para o Dr. avaliar o [pet]?"</li>
+              <li>"O ideal é agendarmos uma avaliação."</li>
+              <li>"Se quiser, já posso te ajudar a deixar isso organizado."</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exemplos-box">
+          <div class="ex-label">Exemplos prontos</div>
+          <div class="exemplo-item">
+            <div class="ex-trigger">Quando perguntam valor de consulta</div>
+            <div class="ex-resposta">"A consulta funciona para o Dr. avaliar com calma o caso do [pet] e orientar o melhor caminho. Se quiser, posso verificar um horário para você."</div>
+          </div>
+          <div class="exemplo-item">
+            <div class="ex-trigger">Quando perguntam valor de cirurgia</div>
+            <div class="ex-resposta">"Para segurança do [pet], o ideal é o Dr. avaliar antes e explicar certinho o procedimento. Posso verificar um horário para essa avaliação?"</div>
+          </div>
+          <div class="exemplo-item">
+            <div class="ex-trigger">Quando perguntam algo e somem</div>
+            <div class="ex-resposta">"Se quiser, posso já te ajudar a organizar uma avaliação para o [pet] e te passar os próximos passos."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. OBJEÇÕES -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">2</div>
+        <div>
+          <h2>Como trabalhar objeções sem discutir preço</h2>
+          <p>Nem toda objeção é falta de dinheiro — muitas vezes é insegurança ou falta de clareza</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="evitar-usar">
+          <div class="eu-box evitar">
+            <div class="eu-label">❌ Evitar</div>
+            <ul>
+              <li>Discutir</li>
+              <li>Insistir no preço</li>
+              <li>Responder seco</li>
+              <li>Pressionar o cliente</li>
+            </ul>
+          </div>
+          <div class="eu-box usar">
+            <div class="eu-label">✅ Fazer</div>
+            <ul>
+              <li>Acolher</li>
+              <li>Reforçar a importância da avaliação</li>
+              <li>Mostrar segurança</li>
+              <li>Conduzir para o próximo passo</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exemplos-box">
+          <div class="ex-label">Como responder objeções</div>
+          <div class="exemplo-item">
+            <div class="ex-trigger">Cliente diz: "Tá caro"</div>
+            <div class="ex-resposta">"Entendo. Nesses casos, o mais importante é avaliar corretamente o [pet], porque isso evita até gasto errado depois. Se quiser, posso te ajudar a organizar essa avaliação."</div>
+          </div>
+          <div class="exemplo-item">
+            <div class="ex-trigger">Cliente diz: "Vou pensar"</div>
+            <div class="ex-resposta">"Claro 😊 Se quiser, posso te chamar amanhã para ver se ficou alguma dúvida e te ajudar a organizar isso com mais calma."</div>
+          </div>
+          <div class="exemplo-item">
+            <div class="ex-trigger">Cliente diz: "Vou ver com meu marido"</div>
+            <div class="ex-resposta">"Perfeito. Se quiser, depois posso te chamar para ver se vocês conseguiram decidir e te ajudar com o próximo passo."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. AGENDA VIVA -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">3</div>
+        <div>
+          <h2>Agenda Viva: Como proteger horários e reduzir buracos</h2>
+          <p>Evitar que a agenda fique vulnerável a faltas, cancelamentos e esquecimentos</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="agenda-grid">
+          <div class="agenda-item">
+            <div class="ai-label">Cirurgias</div>
+            <p>Manter prioridade em terça, quarta e quinta-feira</p>
+          </div>
+          <div class="agenda-item">
+            <div class="ai-label">Segunda-feira</div>
+            <p>Deixar mais aberta para emergências e encaixes</p>
+          </div>
+          <div class="agenda-item">
+            <div class="ai-label">Vacinas e consultas simples</div>
+            <p>Encaixar em horários mais previsíveis</p>
+          </div>
+        </div>
+
+        <div class="regra-box">
+          <div class="label">Lista de encaixe</div>
+          <p>Sempre manter uma lista de clientes que quase fecharam, pediram orçamento, disseram "vou pensar" ou demonstraram interesse. Se abrir horário → chamar primeiro essa lista.</p>
+        </div>
+
+        <div class="exemplos-box">
+          <div class="ex-label">Mensagem de encaixe</div>
+          <div class="exemplo-item">
+            <div class="ex-resposta">"Oi [nome], tudo bem? Abriu um horário aqui para o Dr. avaliar o [pet] ainda essa semana. Se fizer sentido para você, posso te passar."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. CONFIRMAÇÃO -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">4</div>
+        <div>
+          <h2>Confirmação de Consultas e Procedimentos</h2>
+          <p>Todo atendimento agendado deve ser confirmado antes — sem exceção</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="msg-box">
+          <div class="mb-label">Confirmação padrão</div>
+          <p>"Oi [nome], tudo bem? Passando para confirmar o atendimento do [pet] amanhã na ProntoVet 😊"</p>
+        </div>
+        <div class="msg-box">
+          <div class="mb-label">Se a pessoa não puder comparecer</div>
+          <p>"Sem problema 😊 Se quiser, posso te ajudar a remarcar para um horário melhor."</p>
+        </div>
+        <div class="regra-box" style="margin-bottom:0">
+          <div class="label">Por que confirmar</div>
+          <p>Reduz faltas, atrasos e esquecimentos — protegendo a agenda e o faturamento da clínica.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. CHECKLIST -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">5</div>
+        <div>
+          <h2>Checklist Diário da Recepção</h2>
+          <p>Verificar todos os dias, sem falhar</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="checklist-grid">
+          <div class="checklist-item"><div class="cb"></div><p>Conversas sem resposta</p></div>
+          <div class="checklist-item"><div class="cb"></div><p>Orçamentos pendentes</p></div>
+          <div class="checklist-item"><div class="cb"></div><p>Follow-ups do dia</p></div>
+          <div class="checklist-item"><div class="cb"></div><p>Clientes da base para reativação</p></div>
+          <div class="checklist-item"><div class="cb"></div><p>Consultas e procedimentos do dia seguinte para confirmar</p></div>
+          <div class="checklist-item"><div class="cb"></div><p>Horários vagos / encaixes possíveis</p></div>
+          <div class="checklist-item"><div class="cb"></div><p>Etiquetas atualizadas no WhatsApp</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. INDICADORES -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">6</div>
+        <div>
+          <h2>Indicadores Mínimos da Clínica</h2>
+          <p>Acompanhar o básico toda semana — não precisa ser complexo, precisa ser consistente</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="indicadores-grid">
+          <div class="ind-card">
+            <div class="ind-num">01</div>
+            <div class="ind-title">Volume de conversas</div>
+            <div class="ind-desc">Quantos clientes entraram em contato na semana</div>
+          </div>
+          <div class="ind-card">
+            <div class="ind-num">02</div>
+            <div class="ind-title">Agendamentos realizados</div>
+            <div class="ind-desc">Quantos atendimentos foram marcados</div>
+          </div>
+          <div class="ind-card">
+            <div class="ind-num">03</div>
+            <div class="ind-title">Orçamentos abertos</div>
+            <div class="ind-desc">Quantos clientes pediram preço ou avaliação</div>
+          </div>
+          <div class="ind-card">
+            <div class="ind-num">04</div>
+            <div class="ind-title">Orçamentos fechados</div>
+            <div class="ind-desc">Quantos viraram consulta ou procedimento</div>
+          </div>
+          <div class="ind-card">
+            <div class="ind-num">05</div>
+            <div class="ind-title">Follow-ups executados</div>
+            <div class="ind-desc">Quantos acompanhamentos foram feitos</div>
+          </div>
+          <div class="ind-card">
+            <div class="ind-num">06</div>
+            <div class="ind-title">Reativações geradas</div>
+            <div class="ind-desc">Quantos clientes antigos responderam e voltaram</div>
+          </div>
+          <div class="ind-card">
+            <div class="ind-num">07</div>
+            <div class="ind-title">Faltas / remarcações</div>
+            <div class="ind-desc">Quantos agendamentos não aconteceram</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. PERGUNTAS SEMANAIS -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">7</div>
+        <div>
+          <h2>Modelo de Acompanhamento Semanal</h2>
+          <p>Toda semana, a clínica deve conseguir responder a essas perguntas</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="perguntas-grid">
+          <div class="perg-item"><div class="pq">?</div><p>Quantas conversas entraram?</p></div>
+          <div class="perg-item"><div class="pq">?</div><p>Quantos agendamentos saíram dessas conversas?</p></div>
+          <div class="perg-item"><div class="pq">?</div><p>Quantos orçamentos foram acompanhados?</p></div>
+          <div class="perg-item"><div class="pq">?</div><p>Quantos clientes antigos voltaram?</p></div>
+          <div class="perg-item"><div class="pq">?</div><p>Onde mais estamos perdendo dinheiro?</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. ROTINA SEMANAL -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">8</div>
+        <div>
+          <h2>Rotina Comercial Semanal</h2>
+          <p>O que fazer em cada dia da semana — sem improvisar</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="rotina-grid">
+          <div class="rotina-dia">
+            <div class="rotina-dia-header">Segunda-feira</div>
+            <div class="rotina-dia-body">
+              <ul>
+                <li>Revisar conversas da semana anterior</li>
+                <li>Olhar orçamentos em aberto</li>
+                <li>Organizar follow-ups da semana</li>
+              </ul>
+            </div>
+          </div>
+          <div class="rotina-dia">
+            <div class="rotina-dia-header">Quarta-feira</div>
+            <div class="rotina-dia-body">
+              <ul>
+                <li>Executar follow-up</li>
+                <li>Executar reativação</li>
+                <li>Revisar possíveis encaixes</li>
+              </ul>
+            </div>
+          </div>
+          <div class="rotina-dia">
+            <div class="rotina-dia-header">Sexta-feira</div>
+            <div class="rotina-dia-body">
+              <ul>
+                <li>Revisar resultados da semana</li>
+                <li>Conferir agenda da próxima semana</li>
+                <li>Ajustar o que não funcionou</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. RESPONSABILIDADES -->
+    <div class="modulo-card">
+      <div class="modulo-header">
+        <div class="modulo-num">9</div>
+        <div>
+          <h2>Responsabilidades</h2>
+          <p>Quem faz o quê — sem sobreposição</p>
+        </div>
+      </div>
+      <div class="modulo-body">
+        <div class="resp-grid">
+          <div class="resp-card">
+            <div class="resp-card-header recepcao">Recepção</div>
+            <div class="resp-card-body">
+              <ul>
+                <li>Atender com padrão</li>
+                <li>Atualizar etiquetas</li>
+                <li>Fazer follow-up</li>
+                <li>Confirmar consultas</li>
+                <li>Executar reativação</li>
+              </ul>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-header doutor">Dr. Marcos</div>
+            <div class="resp-card-body">
+              <ul>
+                <li>Entrar apenas quando necessário clinicamente</li>
+                <li>Validar ajustes pontuais do processo</li>
+                <li>Acompanhar evolução geral</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── REGRAS DE OURO ── -->
+<section class="ouro-section">
+  <div class="container">
+    <div class="section-label"><div class="dot"></div><span style="color:var(--verde)">Regras de Ouro da ProntoVet</span></div>
+    <h2 class="section-title" style="color:var(--branco);margin-bottom:32px">O que nunca pode ser esquecido</h2>
+    <div class="ouro-grid">
+      <div class="ouro-item"><div class="ouro-num">1</div><p>Cliente que perguntou e sumiu não está perdido. Está sem acompanhamento.</p></div>
+      <div class="ouro-item"><div class="ouro-num">2</div><p>Atendimento não termina no preço. Termina no próximo passo.</p></div>
+      <div class="ouro-item"><div class="ouro-num">3</div><p>Agenda vazia não se resolve só esperando mensagem.</p></div>
+      <div class="ouro-item"><div class="ouro-num">4</div><p>Cliente antigo precisa ser lembrado.</p></div>
+      <div class="ouro-item"><div class="ouro-num">5</div><p>Processo bom reduz dependência do doutor.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RESULTADO ESPERADO + PILARES ── -->
+<section class="resultado-section">
+  <div class="container">
+    <div class="section-label" style="justify-content:center"><div class="dot" style="background:rgba(255,255,255,0.6)"></div><span style="color:rgba(255,255,255,0.7)">Resultado Esperado</span></div>
+    <h2 class="section-title">Quando aplicado corretamente,<br>a ProntoVet terá:</h2>
+    <p class="sub">Impacto direto no faturamento e na operação da clínica</p>
+    <div class="resultado-grid">
+      <div class="resultado-item"><div class="ri-icon">📈</div><p>Mais consultas fechadas</p></div>
+      <div class="resultado-item"><div class="ri-icon">✅</div><p>Menos orçamentos esquecidos</p></div>
+      <div class="resultado-item"><div class="ri-icon">📅</div><p>Menos buracos na agenda</p></div>
+      <div class="resultado-item"><div class="ri-icon">🔁</div><p>Mais retorno de clientes antigos</p></div>
+      <div class="resultado-item"><div class="ri-icon">💡</div><p>Mais clareza sobre o comercial</p></div>
+      <div class="resultado-item"><div class="ri-icon">🔓</div><p>Menos dependência do Dr. Marcos</p></div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div class="section-label" style="justify-content:center;margin-bottom:20px"><div class="dot" style="background:rgba(255,255,255,0.6)"></div><span style="color:rgba(255,255,255,0.7)">Estrutura Completa do Projeto</span></div>
+    </div>
+    <div class="pilares-finais">
+      <div class="pilar-final">
+        <div class="pf-ver">V1</div>
+        <div class="pf-num">01</div>
+        <p>Atendimento e triagem</p>
+      </div>
+      <div class="pilar-final">
+        <div class="pf-ver">V2</div>
+        <div class="pf-num">02</div>
+        <p>Follow-up e recuperação</p>
+      </div>
+      <div class="pilar-final">
+        <div class="pf-ver">V3</div>
+        <div class="pf-num">03</div>
+        <p>Base ativa e reativação</p>
+      </div>
+      <div class="pilar-final destaque">
+        <div class="pf-ver">V4 ✓</div>
+        <div class="pf-num">04</div>
+        <p>Conversão, agenda e indicadores</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <strong>ProntoVet — Clínica Veterinária</strong> · São José dos Quatro Marcos - MT · Playbook Comercial V4
+</footer>
+
+</body>
+</html>
