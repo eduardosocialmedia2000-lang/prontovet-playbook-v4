@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status do Projeto — Provet Maringá</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --blue:   #2E75B6;
+    --cyan:   #4DA8DA;
+    --amber:  #f59e0b;
+    --yellow: #eab308;
+    --green:  #22c55e;
+    --red:    #ef4444;
+
+    --dark:   #1a2744;
+    --dark2:  #1e3058;
+    --dark3:  #243872;
+    --border: #2d4b8e;
+    --text:   #e8f0fb;
+    --muted:  #7fa4c8;
+    --white:  #FFFFFF;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #progress { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,var(--blue),var(--cyan)); transition:width .4s ease; z-index:100; }
+  #counter  { position:fixed; bottom:24px; right:32px; font-size:12px; color:var(--muted); font-weight:500; letter-spacing:1px; z-index:100; }
+
+  .nav-btn { position:fixed; bottom:20px; background:var(--dark3); border:1px solid var(--border); color:var(--text); width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; transition:all .2s; z-index:100; }
+  .nav-btn:hover { background:var(--blue); border-color:var(--blue); color:#fff; }
+  #btn-prev { right:120px; } #btn-next { right:68px; }
+
+  #dots { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:100; }
+  .dot  { width:6px; height:6px; border-radius:50%; background:var(--border); transition:all .3s; cursor:pointer; }
+  .dot.active { background:var(--blue); width:20px; border-radius:3px; }
+
+  #slides { width:100%; height:100vh; position:relative; }
+
+  .slide { position:absolute; width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateX(60px); transition:all .5s cubic-bezier(.4,0,.2,1); pointer-events:none; padding:60px 80px; overflow-y:auto; }
+  .slide.active { opacity:1; transform:translateX(0); pointer-events:all; }
+  .slide.exit   { opacity:0; transform:translateX(-60px); }
+  .slide-inner { max-width:1100px; width:100%; }
+
+  /* COVER */
+  .cover { background:radial-gradient(ellipse at 30% 50%, #0e1a35 0%, var(--dark) 70%); }
+  .cover::before { content:""; position:absolute; top:-200px; right:-200px; width:600px; height:600px; background:radial-gradient(circle, rgba(46,117,182,.18) 0%, transparent 70%); border-radius:50%; }
+  .cover::after  { content:""; position:absolute; bottom:-100px; left:-100px; width:400px; height:400px; background:radial-gradient(circle, rgba(77,168,218,.08) 0%, transparent 70%); border-radius:50%; }
+
+  .badge { display:inline-flex; align-items:center; gap:8px; background:rgba(46,117,182,.14); border:1px solid rgba(46,117,182,.38); color:var(--cyan); padding:6px 16px; border-radius:100px; font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:32px; }
+
+  .cover h1 { font-size:72px; font-weight:900; line-height:.95; letter-spacing:-3px; margin-bottom:24px; }
+  .cover h1 span { background:linear-gradient(135deg,var(--blue),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .cover .subtitle { font-size:19px; color:var(--muted); font-weight:400; max-width:580px; line-height:1.6; margin-bottom:48px; }
+  .cover-tags { display:flex; gap:12px; flex-wrap:wrap; }
+  .ctag { background:var(--dark3); border:1px solid var(--border); padding:8px 16px; border-radius:8px; font-size:13px; color:var(--muted); font-weight:500; }
+
+  .section-label { font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--blue); margin-bottom:16px; }
+  .slide-title { font-size:42px; font-weight:800; line-height:1.1; letter-spacing:-1.5px; margin-bottom:16px; }
+  .slide-title span { background:linear-gradient(135deg,var(--blue),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .slide-desc { font-size:16px; color:var(--muted); line-height:1.7; margin-bottom:28px; max-width:760px; }
+  .divider { width:48px; height:4px; background:linear-gradient(90deg,var(--blue),var(--cyan)); border-radius:2px; margin:20px 0; }
+
+  /* CARDS */
+  .cards { display:grid; gap:14px; }
+  .cards-2 { grid-template-columns:repeat(2,1fr); }
+  .cards-3 { grid-template-columns:repeat(3,1fr); }
+
+  .card { background:var(--dark2); border:1px solid var(--border); border-radius:16px; padding:22px 24px; transition:border-color .2s; }
+  .card:hover { border-color:rgba(46,117,182,.5); }
+  .card.highlight { background:linear-gradient(135deg,rgba(46,117,182,.12),rgba(77,168,218,.04)); border-color:rgba(46,117,182,.32); }
+  .card-icon { font-size:26px; margin-bottom:12px; display:block; }
+  .card h3 { font-size:15px; font-weight:700; margin-bottom:8px; }
+  .card p  { font-size:13px; color:var(--muted); line-height:1.6; }
+
+  /* LIST */
+  .list { display:flex; flex-direction:column; gap:10px; }
+  .list-item { display:flex; align-items:flex-start; gap:14px; background:var(--dark2); border:1px solid var(--border); border-radius:12px; padding:14px 18px; }
+  .li-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; margin-top:1px; }
+  .li-icon.green  { background:rgba(34,197,94,.14); }
+  .li-icon.yellow { background:rgba(234,179,8,.14); }
+  .li-icon.red    { background:rgba(239,68,68,.14); }
+  .li-icon.blue   { background:rgba(46,117,182,.14); }
+  .list-item h4 { font-size:14px; font-weight:700; margin-bottom:3px; }
+  .list-item p  { font-size:12.5px; color:var(--muted); line-height:1.5; }
+
+  /* STATUS PILLS */
+  .pills { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .pill  { padding:4px 11px; border-radius:100px; font-size:11px; font-weight:600; }
+  .pill.green  { background:rgba(34,197,94,.13);  color:#22c55e; border:1px solid rgba(34,197,94,.3); }
+  .pill.yellow { background:rgba(234,179,8,.13);  color:#eab308; border:1px solid rgba(234,179,8,.3); }
+  .pill.red    { background:rgba(239,68,68,.13);  color:#ef4444; border:1px solid rgba(239,68,68,.3); }
+  .pill.blue   { background:rgba(46,117,182,.13); color:var(--cyan); border:1px solid rgba(46,117,182,.3); }
+
+  /* STEPS */
+  .steps { display:flex; flex-direction:column; gap:14px; }
+  .step  { display:flex; align-items:flex-start; gap:14px; }
+  .step-num { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--cyan)); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0; color:#fff; }
+  .step-content h4 { font-size:14px; font-weight:700; margin-bottom:3px; }
+  .step-content p  { font-size:12.5px; color:var(--muted); line-height:1.5; }
+
+  /* CLOSE */
+  .close-slide { text-align:center; }
+  .close-slide h2 { font-size:52px; font-weight:900; line-height:1.05; letter-spacing:-2px; margin-bottom:20px; }
+  .close-slide h2 span { background:linear-gradient(135deg,var(--blue),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .close-slide p { font-size:18px; color:var(--muted); max-width:560px; margin:0 auto 32px; line-height:1.6; }
+
+  .btn-primary { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,var(--blue),var(--cyan)); color:#fff; padding:14px 30px; border-radius:12px; font-size:15px; font-weight:800; border:none; cursor:pointer; text-decoration:none; }
+  .btn-primary:hover { opacity:.9; }
+  .btn-whatsapp { background:linear-gradient(135deg,#25D366,#128C7E); }
+
+  /* STATUS BOARD */
+  .status-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .status-col h3 { font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; padding:8px 14px; border-radius:8px; }
+  .status-col.done h3   { background:rgba(34,197,94,.1);  color:#22c55e; border:1px solid rgba(34,197,94,.25); }
+  .status-col.todo h3   { background:rgba(239,68,68,.1);  color:#ef4444; border:1px solid rgba(239,68,68,.25); }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    body { overflow-y:auto; height:auto; }
+    #slides { height:auto; position:relative; }
+    .slide { position:relative; opacity:1 !important; transform:none !important; pointer-events:all !important; padding:32px 18px 90px; height:auto; min-height:100svh; display:none; align-items:flex-start; }
+    .slide.active { display:flex; }
+    #dots { bottom:16px; } .nav-btn { bottom:12px; }
+    #btn-prev { right:100px; } #btn-next { right:52px; } #counter { bottom:18px; right:16px; }
+    .cover h1 { font-size:38px; letter-spacing:-1.5px; }
+    .cover .subtitle { font-size:14px; }
+    .slide-title { font-size:26px; letter-spacing:-0.5px; }
+    .slide-desc  { font-size:13.5px; margin-bottom:18px; }
+    .cards-3,.cards-2 { grid-template-columns:1fr; }
+    .status-grid { grid-template-columns:1fr; }
+    .close-slide h2 { font-size:30px; }
+    .close-slide p  { font-size:15px; }
+  }
+  @media (max-width: 400px) {
+    .cover h1 { font-size:30px; }
+    .slide-title { font-size:22px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="dots"></div>
+<button class="nav-btn" id="btn-prev">←</button>
+<button class="nav-btn" id="btn-next">→</button>
+<div id="counter">1 / 7</div>
+
+<div id="slides">
+
+  <!-- ====== SLIDE 1: CAPA ====== -->
+  <div class="slide cover active">
+    <div class="slide-inner">
+      <div class="badge">🐾 Sigma &nbsp;·&nbsp; Status do Projeto</div>
+      <h1>Status do<br>Projeto<br><span>Provet Maringá</span></h1>
+      <p class="subtitle">Acompanhamento das entregas de marketing digital — Abril 2026</p>
+      <div class="cover-tags">
+        <div class="ctag">📍 Maringá, PR</div>
+        <div class="ctag">📅 Abril 2026</div>
+        <div class="ctag">🎯 Google Ads · GTM · GA4</div>
+        <div class="ctag">🐾 Clínica Veterinária</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 2: VISÃO GERAL ====== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="section-label">Escopo do Projeto</div>
+      <div class="slide-title">O que está <span>previsto</span> no contrato</div>
+      <div class="divider"></div>
+      <p class="slide-desc">O projeto cobre toda a infraestrutura de marketing digital da Provet Maringá — desde o rastreamento de conversões até a gestão de campanhas pagas no Google e nas redes sociais.</p>
+      <div class="cards cards-3">
+        <div class="card highlight">
+          <span class="card-icon">🎯</span>
+          <h3>Google Ads</h3>
+          <p>Campanhas de busca para cirurgia veterinária em Maringá, com gestão de palavras-chave, anúncios e extensões.</p>
+          <div class="pills"><div class="pill blue">Search</div><div class="pill blue">Extensões</div></div>
+        </div>
+        <div class="card highlight">
+          <span class="card-icon">📊</span>
+          <h3>Rastreamento (GTM + GA4)</h3>
+          <p>Implementação do Google Tag Manager e Google Analytics 4 para medir cliques, visitas e conversões com precisão.</p>
+          <div class="pills"><div class="pill blue">GTM</div><div class="pill blue">GA4</div></div>
+        </div>
+        <div class="card">
+          <span class="card-icon">📱</span>
+          <h3>Meta Ads</h3>
+          <p>Campanhas no Facebook e Instagram para geração de leads e reconhecimento de marca na região.</p>
+          <div class="pills"><div class="pill red">Pendente</div></div>
+        </div>
+        <div class="card">
+          <span class="card-icon">✍️</span>
+          <h3>Roteiros para Instagram</h3>
+          <p>Produção de roteiros de conteúdo educativo e de autoridade para o perfil da Provet no Instagram.</p>
+          <div class="pills"><div class="pill red">Pendente</div></div>
+        </div>
+        <div class="card">
+          <span class="card-icon">📍</span>
+          <h3>Extensão de Localização</h3>
+          <p>Vinculação do Google Meu Negócio ao Google Ads para exibir endereço físico nos anúncios.</p>
+          <div class="pills"><div class="pill yellow">Aguardando</div></div>
+        </div>
+        <div class="card">
+          <span class="card-icon">🔗</span>
+          <h3>Sitelinks e Chamadas</h3>
+          <p>Extensões de texto e número de telefone para ampliar os anúncios e aumentar a taxa de clique.</p>
+          <div class="pills"><div class="pill green">Ativo</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 3: ENTREGUES ====== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="section-label">✅ Concluído</div>
+      <div class="slide-title">O que já foi <span>entregue</span></div>
+      <div class="divider"></div>
+      <div class="list">
+        <div class="list-item">
+          <div class="li-icon green">✅</div>
+          <div>
+            <h4>Propriedade GA4 criada</h4>
+            <p>ID G-XZ9EKT8V95 vinculada ao site provetmaringa.com.br — coleta dados de tráfego em tempo real.</p>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon green">✅</div>
+          <div>
+            <h4>Container GTM configurado e publicado</h4>
+            <p>Container GTM-NS9P3BPV com 6 tags ativas publicadas na Versão 6. Nenhuma duplicidade identificada.</p>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon green">✅</div>
+          <div>
+            <h4>Evento de WhatsApp rastreado</h4>
+            <p>Tag GTM captura cliques no botão de WhatsApp do site e envia o evento <code style="font-size:11px;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px;">whatsapp_click</code> para o GA4.</p>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon green">✅</div>
+          <div>
+            <h4>Conversão importada no Google Ads como primária</h4>
+            <p>"Clique do Whatsapp" marcada como conversão primária — 30 conversões registradas. Medição funcionando corretamente.</p>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon green">✅</div>
+          <div>
+            <h4>31 palavras negativas adicionadas à campanha</h4>
+            <p>Concorrentes (Pronto Dog, AnimalMed, Vida Animal…), intenção fraca (preço, horário, endereço) e marca própria para evitar canibalização.</p>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon green">✅</div>
+          <div>
+            <h4>Extensões de anúncio verificadas</h4>
+            <p>Sitelinks, extensões de chamada e imagens ativos na campanha [SEARCH] Cirurgia.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 4: EM ANDAMENTO ====== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="section-label">🟡 Em andamento</div>
+      <div class="slide-title">O que está <span>em progresso</span></div>
+      <div class="divider"></div>
+      <p class="slide-desc">Itens que foram iniciados mas dependem de ações externas ou de monitoramento contínuo para serem concluídos.</p>
+      <div class="list" style="margin-bottom:20px;">
+        <div class="list-item">
+          <div class="li-icon yellow">⏸️</div>
+          <div>
+            <h4>Campanhas pausadas até Maio/2026</h4>
+            <p>As campanhas foram pausadas para controle de orçamento após identificar gasto de R$1.217 em 20 dias (orçamento autorizado: R$1.000). Serão reativadas no início de Maio com orçamento ajustado.</p>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon yellow">📊</div>
+          <div>
+            <h4>Monitoramento de conversões em acúmulo</h4>
+            <p>Os dados de whatsapp_click e conversões do Google Ads seguem sendo coletados mesmo com as campanhas pausadas — via tráfego orgânico e direto.</p>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon yellow">📍</div>
+          <div>
+            <h4>Extensão de Localização — aguardando vinculação</h4>
+            <p>O perfil do Google Meu Negócio da Provet Maringá precisa ser vinculado ao e-mail aagenciasigma@gmail.com para que a extensão possa ser criada no Google Ads.</p>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon yellow">🔗</div>
+          <div>
+            <h4>Sitelink "Fale pelo WhatsApp" reprovado</h4>
+            <p>A URL de destino deste sitelink foi reprovada pelo Google. Aguardando definição da URL correta para correção.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 5: PENDENTE ====== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="section-label">🔴 Não iniciado</div>
+      <div class="slide-title">O que <span>ainda falta</span> entregar</div>
+      <div class="divider"></div>
+      <p class="slide-desc">Entregas previstas no escopo que ainda não foram iniciadas. Estão no planejamento para os próximos meses.</p>
+      <div class="cards cards-2" style="margin-bottom:16px;">
+        <div class="card" style="border-color:rgba(239,68,68,.25); background:linear-gradient(135deg,rgba(239,68,68,.06),rgba(239,68,68,.02));">
+          <span class="card-icon">📱</span>
+          <h3>Meta Ads (Facebook + Instagram)</h3>
+          <p>Criação da conta de anúncios, estrutura de campanhas, públicos-alvo, criativos e configuração do Pixel da Meta no site da Provet.</p>
+          <div class="pills" style="margin-top:12px;">
+            <div class="pill red">Não iniciado</div>
+          </div>
+        </div>
+        <div class="card" style="border-color:rgba(239,68,68,.25); background:linear-gradient(135deg,rgba(239,68,68,.06),rgba(239,68,68,.02));">
+          <span class="card-icon">✍️</span>
+          <h3>Roteiros para Instagram</h3>
+          <p>Produção de roteiros de Reels e carrosséis com foco em educação dos tutores, autoridade veterinária e captação de novos clientes.</p>
+          <div class="pills" style="margin-top:12px;">
+            <div class="pill red">Não iniciado</div>
+          </div>
+        </div>
+      </div>
+      <div class="card highlight" style="padding:18px 22px;">
+        <p style="font-size:12px; font-weight:700; letter-spacing:2px; color:var(--cyan); text-transform:uppercase; margin-bottom:10px;">Impacto no projeto</p>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.6;">O Google Ads já está funcionando e rastreando. Os próximos ganhos de escala vêm do Meta Ads (volume de topo de funil) e do conteúdo orgânico no Instagram. Esses dois canais, combinados, podem reduzir o CPL e aumentar o reconhecimento de marca em Maringá.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 6: PRÓXIMOS PASSOS ====== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="section-label">Próximos Passos</div>
+      <div class="slide-title">O <span>caminho</span> a partir de agora</div>
+      <div class="divider"></div>
+      <div class="steps" style="margin-bottom:24px;">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Reativar campanhas Google Ads — Início de Maio/2026</h4>
+            <p>Retomar com orçamento ajustado de R$33/dia para manter-se dentro do limite de R$1.000/mês. Monitorar CPA e termos de pesquisa nas 2 primeiras semanas.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Vincular Google Meu Negócio ao e-mail da agência — Maio/2026</h4>
+            <p>Conceder acesso ao perfil da Provet Maringá no GMB para o e-mail aagenciasigma@gmail.com. Isso desbloqueia a criação da Extensão de Localização no Google Ads.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Corrigir sitelink "Fale pelo WhatsApp" — Maio/2026</h4>
+            <p>Definir e inserir a URL correta de destino do WhatsApp para o sitelink reprovado. Após correção, o Google revisa em até 3 dias úteis.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Iniciar Meta Ads — A definir</h4>
+            <p>Criar conta no Gerenciador de Anúncios da Meta, instalar o Pixel no site e lançar as primeiras campanhas de reconhecimento e conversão no Facebook/Instagram.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h4>Produção de roteiros para Instagram — A definir</h4>
+            <p>Estruturar calendário editorial e produzir os primeiros roteiros de Reels com foco em dúvidas frequentes de tutores e procedimentos cirúrgicos da clínica.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 7: ENCERRAMENTO ====== -->
+  <div class="slide" style="background:radial-gradient(ellipse at 50% 50%, #0e1a35 0%, var(--dark) 70%);">
+    <div class="slide-inner close-slide">
+      <div class="badge" style="margin-bottom:24px;">🐾 Sigma &nbsp;·&nbsp; Provet Maringá</div>
+      <h2>Construindo<br><span>juntos e com dados</span></h2>
+      <p>A base de rastreamento está sólida. Com as campanhas reativadas e os próximos canais no ar, o crescimento é previsível e mensurável.</p>
+      <div class="cover-tags" style="justify-content:center; margin-bottom:36px;">
+        <div class="ctag">📊 Google Ads ativo</div>
+        <div class="ctag">✅ GA4 + GTM funcionando</div>
+        <div class="ctag">📍 Maringá, PR</div>
+      </div>
+      <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+        <a href="https://wa.me/5544999999999" target="_blank" class="btn-primary btn-whatsapp">
+          💬 Falar pelo WhatsApp
+        </a>
+        <button class="btn-primary" style="background:var(--dark3); color:var(--text);" onclick="goTo(0)">← Voltar ao início</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total  = slides.length;
+  let current  = 0;
+
+  const progress = document.getElementById('progress');
+  const counter  = document.getElementById('counter');
+  const dotsEl   = document.getElementById('dots');
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  });
+
+  function update() {
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'exit');
+      if (i === current) s.classList.add('active');
+      else if (i < current) s.classList.add('exit');
+    });
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    counter.textContent  = (current + 1) + ' / ' + total;
+  }
+
+  function goTo(n) {
+    current = Math.max(0, Math.min(total - 1, n));
+    update();
+  }
+
+  document.getElementById('btn-prev').onclick = () => goTo(current - 1);
+  document.getElementById('btn-next').onclick = () => goTo(current + 1);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    goTo(current - 1);
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend',   e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) goTo(current + (dx > 0 ? 1 : -1));
+  });
+
+  update();
+</script>
+
+</body></html>
