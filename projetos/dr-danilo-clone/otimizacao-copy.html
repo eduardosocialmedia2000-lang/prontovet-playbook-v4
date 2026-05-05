@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Otimização — Dr. Danilo Matsunaga</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #161926;
+    --border: #1e2438;
+    --text: #dde3f0;
+    --muted: #7a85a3;
+    --accent: #64ffda;
+    --google: #4d9fff;
+    --meta: #5b8fff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Georgia', serif;
+    font-size: 17px;
+    line-height: 1.85;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 72px 32px 120px;
+  }
+
+  /* COVER */
+  .cover {
+    margin-bottom: 72px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 48px;
+  }
+
+  .cover-label {
+    font-family: -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .cover h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .cover-sub {
+    font-size: 15px;
+    color: var(--muted);
+    font-family: -apple-system, sans-serif;
+    line-height: 1.5;
+  }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 32px;
+  }
+
+  .nav-btn {
+    padding: 9px 22px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .nav-btn:hover { border-color: #3a4060; color: var(--text); }
+
+  .nav-btn.on-google {
+    background: #0d2040;
+    border-color: var(--google);
+    color: #fff;
+  }
+
+  .nav-btn.on-meta {
+    background: #0d1840;
+    border-color: var(--meta);
+    color: #fff;
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CHAPTER */
+  .chapter {
+    margin-bottom: 64px;
+  }
+
+  .chapter-eyebrow {
+    font-family: -apple-system, sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .chapter h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+    margin-bottom: 28px;
+    line-height: 1.25;
+  }
+
+  /* BLOCKS */
+  .block {
+    margin-bottom: 40px;
+  }
+
+  .block h3 {
+    font-family: -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .block h3 .badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .p0 { background: #dc262620; color: #f87171; border: 1px solid #dc262640; }
+  .p1 { background: #d9770620; color: #fb923c; border: 1px solid #d9770640; }
+  .p2 { background: #ca8a0420; color: #fbbf24; border: 1px solid #ca8a0440; }
+  .p3 { background: #16a34a20; color: #4ade80; border: 1px solid #16a34a40; }
+
+  p {
+    color: #bbc4da;
+    margin-bottom: 16px;
+  }
+
+  p:last-child { margin-bottom: 0; }
+
+  p strong { color: var(--text); font-weight: 600; }
+
+  em { color: var(--text); font-style: italic; }
+
+  /* CALLOUT */
+  .callout {
+    border-left: 3px solid var(--accent);
+    padding: 14px 20px;
+    background: #141926;
+    border-radius: 0 8px 8px 0;
+    margin: 24px 0;
+    font-size: 16px;
+    color: #a8b4cc;
+    line-height: 1.7;
+  }
+
+  .callout.warn {
+    border-color: #f59e0b;
+  }
+
+  .callout.danger {
+    border-color: #ef4444;
+  }
+
+  .callout strong { color: #e2e8f0; }
+
+  /* UL */
+  ul.doc-list {
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  ul.doc-list li {
+    padding-left: 20px;
+    position: relative;
+    color: #bbc4da;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  ul.doc-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 56px 0;
+  }
+
+  /* TABLE */
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: -apple-system, sans-serif;
+    font-size: 13.5px;
+    margin: 20px 0 8px;
+  }
+
+  .doc-table th {
+    text-align: left;
+    padding: 9px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .doc-table td {
+    padding: 10px 14px;
+    color: #bbc4da;
+    border-bottom: 1px solid #181d2d;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .doc-table tr:last-child td { border-bottom: none; }
+
+  .doc-table td strong { color: var(--text); }
+
+  code {
+    font-family: 'SF Mono', monospace;
+    font-size: 13px;
+    background: #1a1f33;
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-label">Sigma Agência · Dr. Danilo Matsunaga</div>
+    <h1>Guia de Otimização<br>Google Ads + Meta Ads</h1>
+    <p class="cover-sub">Maio de 2026 · Referência operacional para os próximos 3 meses</p>
+
+    <div class="nav">
+      <button class="nav-btn on-google" onclick="show('google', this)">Google Ads</button>
+      <button class="nav-btn" onclick="show('meta', this)">Meta Ads</button>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- GOOGLE ADS -->
+  <!-- ============================================================ -->
+  <div class="section active" id="section-google">
+
+    <div class="chapter">
+      <div class="chapter-eyebrow">Contexto inicial</div>
+      <h2>O ponto de partida</h2>
+
+      <p>As quatro campanhas do Dr. Danilo foram publicadas em 5 de maio de 2026. São Paulo com R$55 por dia, Campinas com R$30, Goiânia com R$25 e Piracicaba com R$15. Todas usam Maximizar Conversões, palavras-chave em exata e frase, e têm como única conversão o clique no WhatsApp.</p>
+
+      <p>A conta tem lista de palavras negativas com 103 termos aplicada em todas as campanhas, sitelinks em análise e nove frases de destaque ativas no nível de conta.</p>
+
+      <div class="callout warn">
+        <strong>Conta em learning period.</strong> O Maximizar Conversões precisa de pelo menos 14 dias de estabilidade para o algoritmo aprender o perfil do lead ideal. Qualquer mudança grande nesse período — pausa de campanha, corte de orçamento, troca de estratégia de lance — reinicia o aprendizado do zero. A regra desta primeira quinzena é: monitore, mas não interfira.
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FASE 1 -->
+    <div class="chapter">
+      <div class="chapter-eyebrow">Dias 1 a 7 · Prioridade máxima</div>
+      <h2>Validação de base</h2>
+
+      <div class="block">
+        <h3><span class="badge p0">P0</span> A conversão está sendo contada certo?</h3>
+        <p>Esta é a pergunta mais importante de toda a otimização. Se a conversão "Clique WhatsApp" estiver disparando errado — contando duplo, não contando, ou contando cliques irrelevantes — o algoritmo do Maximizar Conversões aprende na direção errada. Você vai gastar dinheiro, o Google vai achar que está funcionando, e o Dr. Danilo vai receber menos leads do que poderia.</p>
+        <p>O caminho para validar é simples: use o Tag Assistant (extensão do Chrome) para confirmar que o evento dispara exatamente quando alguém clica no botão de WhatsApp. Em seguida, compare o número de conversões dentro do Google Ads com o que o Dr. Danilo está recebendo no WhatsApp. Se os números forem razoavelmente parecidos, tudo certo. Se houver discrepância grande, há um problema de medição a resolver antes de qualquer outra coisa.</p>
+        <p>Também verifique no Google Ads em <strong>Metas → Conversões</strong> se a conversão aparece com registros chegando. Se estiver zerada após dois dias de campanha ativa, investigue imediatamente.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p0">P0</span> As campanhas estão entregando?</h3>
+        <p>Confira diariamente, nos primeiros 7 dias, se todas as campanhas estão com status <strong>Ativa</strong>. Um anúncio reprovado por política significa campanha sem entrega. Com o tema de saúde hormonal, o risco de reprovação existe — especialmente o sitelink "Reposição Hormonal", que pode ser sinalizado pela política de Saúde na Publicidade Personalizada do Google.</p>
+        <p>Se algum sitelink for reprovado, troque o texto por algo mais neutro: "Reposição Hormonal" pode virar "Tratamento Hormonal" ou "Equilíbrio Hormonal". O conteúdo é o mesmo; o texto contorna a flag automática.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p0">P0</span> O Dr. Danilo está respondendo os leads?</h3>
+        <p>Parece óbvio, mas é o ponto que mais impacta o retorno real da conta. A melhor configuração de Google Ads do mundo não converte se o lead cai no WhatsApp e fica 4 horas sem resposta. O perfil de quem pesquisa "médico reposição hormonal SP" no Google é de uma pessoa com intenção alta — ela já pesquisou, tomou a decisão de clicar, quis falar. Se não for atendida em até 30 minutos, vai pesquisar o próximo médico.</p>
+        <p>Garanta que o WhatsApp tem notificações ativas durante o horário comercial, que existe uma mensagem automática de boas-vindas configurada no WhatsApp Business, e que o Dr. Danilo ou alguém da equipe tem a responsabilidade de responder rapidamente.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p1">P1</span> Adicionar extensão de chamada (Call Asset)</h3>
+        <p>Existe um perfil de paciente que prefere ligar antes de ir ao WhatsApp. Pessoas com mais de 45 anos, que são exatamente o público do Dr. Danilo, têm essa preferência com muito mais frequência. Sem um Call Asset, esses leads ou saem sem converter ou clicam no anúncio sem ter intenção clara.</p>
+        <p>O Call Asset é simples de criar: <strong>Recursos → Criar recurso → Ligar para</strong>. Coloque o número da secretária ou da clínica, defina o horário de exibição para o período em que o telefone é atendido, e pronto. O número aparece diretamente no anúncio nos resultados de busca.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FASE 2 -->
+    <div class="chapter">
+      <div class="chapter-eyebrow">Semanas 2 e 3</div>
+      <h2>Primeiras otimizações com dados reais</h2>
+
+      <div class="block">
+        <h3><span class="badge p1">P1</span> Revisar os termos de pesquisa semanalmente</h3>
+        <p>Esta é a otimização de maior impacto no curto prazo. Mesmo com keywords em exata e frase e 103 negativas na lista, vão aparecer termos irrelevantes nas primeiras semanas — isso é natural e esperado. O que importa é reagir rápido.</p>
+        <p>A rota é: <strong>Campanhas → Palavras-chave → Termos de pesquisa</strong>, filtrando os últimos 7 dias. Você está procurando dois tipos de itens. O primeiro são termos ruins para negativar: qualquer coisa com "plano de saúde", "convênio", "SUS", "gratuito", "barato", "curso", "formação", ou especialidades médicas que não são do Dr. Danilo. O segundo são termos bons que ainda não são keywords explícitas — se aparecer um termo com clique e CTR alto, como "endocrinologista reposição hormonal SP", vale promover para keyword de exata.</p>
+        <p>Faça essa revisão toda segunda-feira. Leva 15 minutos e tem retorno direto sobre o custo por conversão.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> Adicionar fotos reais (Image Assets)</h3>
+        <p>Image Assets expandem o espaço visual do anúncio na página de resultados do Google. Para um médico especialista, foto de banco de imagem funciona mal — as pessoas detectam e ignoram. Foto real do Dr. Danilo, de jaleco ou no consultório, transmite credibilidade instantânea e gera muito mais clique.</p>
+        <p>Precisam de pelo menos uma imagem horizontal (1200×628px) e uma quadrada (1200×1200px). Adicionados no nível de conta, aparecem automaticamente em todas as campanhas. Se o Dr. Danilo não tiver fotos profissionais, esse é um bom momento para resolver — vale o investimento.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> Adicionar Snippets Estruturados de serviços</h3>
+        <p>Snippets estruturados mostram uma lista de serviços abaixo do anúncio em desktop, expandindo o espaço visual sem custo adicional por clique. Com o cabeçalho "Serviços", você pode listar: Reposição Hormonal Masculina, Reposição Hormonal Feminina, Tratamento de Andropausa, Tratamento de Menopausa, Otimização de Testosterona, Consulta Presencial e Online.</p>
+        <p>Isso serve tanto para qualificar melhor o clique (quem clica já sabe o que o Dr. Danilo oferece) quanto para ocupar mais espaço na SERP e empurrar concorrentes para baixo.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> Criar dois RSAs adicionais por campanha</h3>
+        <p>Hoje cada campanha tem um único RSA. O Google consegue testar e otimizar combinações de headlines com mais eficiência quando tem pelo menos 3 RSAs por campanha para comparar. Com um único anúncio, não há variação — o algoritmo não tem escolha.</p>
+        <p>A estrutura recomendada para os três RSAs é simples. O primeiro foca em serviço e especialidade: palavra-chave principal + credencial do Dr. Danilo. O segundo foca em benefício e resultado: a transformação que o paciente busca, como energia, disposição, qualidade de vida. O terceiro foca em acesso e urgência: facilidade de agendar, atendimento na cidade específica, WhatsApp direto.</p>
+        <p>Essa variação permite que o Google sirva o anúncio mais relevante para cada perfil de busca dentro da mesma campanha.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FASE 3 -->
+    <div class="chapter">
+      <div class="chapter-eyebrow">Mês 1 completo</div>
+      <h2>Análise e consolidação</h2>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> Avaliar o Asset Performance de cada RSA</h3>
+        <p>Depois de 14 dias, o Google começa a dar notas para cada headline e description dentro dos RSAs: Best, Good ou Low. Qualquer asset marcado como <strong>Low</strong> deve ser substituído. Significa que o Google praticamente parou de usar aquele texto — ele está ocupando espaço sem contribuir.</p>
+        <p>Quando for substituir um Low, não tente adivinhar o que funciona — use o que foi Best em outros RSAs como referência. Padrões que costumam performar bem para médico especialista: especificidade da cidade, urgência implícita ("Agende Hoje"), resultado concreto ("Mais Energia em Semanas"), e credencial direta ("Especialista em Reposição Hormonal").</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> Redistribuir verba baseado em performance</h3>
+        <p>Ao fim do primeiro mês, você vai saber qual cidade está gerando mais conversões por real investido. A tendência natural é que São Paulo, com maior volume de buscas, gere mais resultados — mas isso precisa ser confirmado com dados reais antes de mover qualquer verba.</p>
+        <p>A regra prática: se uma campanha está limitada por orçamento e apresenta CPA saudável, ela merece mais verba. Se Piracicaba, com R$15 por dia, não gerar nenhuma conversão em 30 dias, a recomendação é pausar e redirecionar o valor para São Paulo ou Campinas. R$15 por dia é pouco para o algoritmo aprender em mercado competitivo.</p>
+
+        <div class="callout warn">
+          Nunca aumente o orçamento de uma campanha mais de 20% por vez. Aumentos grandes podem tirar a campanha do estado otimizado e jogar ela de volta para o learning period.
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FASE 4 -->
+    <div class="chapter">
+      <div class="chapter-eyebrow">A partir do mês 2</div>
+      <h2>Escala e otimização avançada</h2>
+
+      <div class="block">
+        <h3><span class="badge p3">P3</span> Migrar para tCPA quando tiver histórico suficiente</h3>
+        <p>O Maximizar Conversões é a estratégia correta para conta nova. Quando a conta tiver acumulado pelo menos 30 conversões, é o momento de considerar a migração para tCPA (CPA desejado), que dá ao algoritmo um alvo explícito para trabalhar.</p>
+        <p>A regra de ouro do tCPA é definir o alvo em 120% do CPA real histórico. Se o custo por conversão do primeiro mês for R$60, o tCPA inicial deve ser R$72 — nunca abaixo do histórico real. Definir um tCPA muito agressivo faz o algoritmo reduzir drásticamente a entrega por não conseguir cumprir a meta.</p>
+        <p>Faça a migração em uma campanha de cada vez, começando por São Paulo. Aguarde 14 dias antes de avaliar o resultado e só então repita para as outras.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p3">P3</span> Display e Remarketing — quando faz sentido</h3>
+        <p>Display só tem valor quando há base para remarketing. Sem uma lista de visitantes do site razoável — pelo menos 500 pessoas — uma campanha de Display é basicamente uma campanha de awareness sem controle de público, com retorno muito difícil de medir.</p>
+        <p>O momento certo para avaliar Display é o segundo mês, quando as campanhas de Pesquisa estiverem estabilizadas e gerando volume regular. Pré-requisitos concretos: Pesquisa gerando pelo menos 10 conversões por mês, lista de remarketing com 100 ou mais visitantes, e criativos reais disponíveis com foto do Dr. Danilo.</p>
+      </div>
+    </div>
+
+  </div>
+  <!-- /GOOGLE -->
+
+
+  <!-- ============================================================ -->
+  <!-- META ADS -->
+  <!-- ============================================================ -->
+  <div class="section" id="section-meta">
+
+    <div class="chapter">
+      <div class="chapter-eyebrow">Contexto inicial</div>
+      <h2>O ponto de partida</h2>
+
+      <p>O funil atual do Dr. Danilo no Meta tem quatro campanhas ativas. O topo do funil está em R$50 por dia com objetivo de Engajamento, com um único conjunto cobrindo as quatro cidades. O meio do funil está em R$25 por dia com objetivo de Tráfego, em um único conjunto. O fundo do funil está em R$45 por dia distribuídos em três conjuntos de R$15, com objetivo de WhatsApp. Além disso, há uma campanha de Instagram no topo do funil com R$20 por dia divididos em quatro conjuntos de R$5.</p>
+
+      <p>O total é R$140 por dia, com estrutura ABO em todas as campanhas. A distribuição está correta — mais verba no topo para alimentar o funil, BOF menor e mais qualificado. O que precisa de atenção agora é a qualidade dentro de cada fase.</p>
+
+      <div class="callout">
+        A estrutura do funil em si está bem desenhada. O risco não está na arquitetura — está nos detalhes de execução: a conversão está sendo medida certo? Os públicos do BOF são realmente quentes? Os criativos de cada fase falam com o estado de consciência correto do público?
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FASE 1 -->
+    <div class="chapter">
+      <div class="chapter-eyebrow">Esta semana · Prioridade máxima</div>
+      <h2>Validação de base</h2>
+
+      <div class="block">
+        <h3><span class="badge p0">P0</span> O Pixel está funcionando certo?</h3>
+        <p>Assim como no Google Ads, a medição é a fundação de tudo. No Meta, o ponto crítico é o <strong>Event Match Quality</strong> — uma nota de 0 a 10 que indica com que qualidade o Meta consegue identificar quem gerou o evento de conversão. Abaixo de 6.0, o algoritmo de otimização trabalha com dados imprecisos.</p>
+        <p>Para verificar, acesse o <strong>Events Manager</strong> e confirme que o evento "Contact" (ou o evento de clique no WhatsApp que você está usando como conversão) está chegando com regularidade e com uma nota de match aceitável. Se estiver abaixo de 6.0, a solução mais eficiente é implementar a Conversions API (CAPI) junto com o Pixel — isso passa os dados pelo servidor, não pelo navegador, e aumenta consideravelmente a qualidade da medição.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p0">P0</span> Os públicos do BOF são realmente quentes?</h3>
+        <p>O fundo do funil com três conjuntos de R$15 por dia só faz sentido se os públicos dentro deles forem genuinamente quentes — pessoas que já tiveram contato com o Dr. Danilo ou com o conteúdo dele e estão em etapa de decisão. Se os conjuntos estiverem com públicos frios ou mal definidos, você está gastando R$45 por dia com a mesma intensidade do BOF em pessoas que na prática estão no estágio de consciência do TOF.</p>
+        <p>Verifique o que está dentro de cada conjunto. Públicos ideais para o BOF: visitantes do site nos últimos 30 dias, pessoas que assistiram mais de 75% dos vídeos do Dr. Danilo, pessoas que salvaram posts, pessoas que iniciaram uma conversa pelo DM ou WhatsApp. Se os públicos forem mais amplos do que isso — como "engajou com o perfil nos últimos 365 dias" —, considere segmentar melhor.</p>
+        <p>Também vale checar a <strong>sobreposição de público</strong> entre os três conjuntos do BOF usando o Audience Overlap no Ads Manager. Se os três estiverem mostrando o anúncio para as mesmas pessoas, você está concorrendo contra si mesmo e inflando o CPM.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p1">P1</span> Os criativos estão alinhados com cada fase?</h3>
+        <p>Cada fase do funil pressupõe um estado de consciência diferente do público. Misturar os criativos — usar oferta direta no TOF ou conteúdo educativo no BOF — é um erro que compromete a eficiência de toda a estrutura.</p>
+
+        <table class="doc-table">
+          <tr>
+            <th>Fase</th>
+            <th>Estado do público</th>
+            <th>O que o criativo precisa fazer</th>
+          </tr>
+          <tr>
+            <td><strong>TOF</strong></td>
+            <td>Não conhece o Dr. Danilo</td>
+            <td>Gerar identificação com a dor. Hook forte nos 3 primeiros segundos. Sem pitch de venda.</td>
+          </tr>
+          <tr>
+            <td><strong>MOF</strong></td>
+            <td>Viu conteúdo, está considerando</td>
+            <td>Prova social, depoimento real, diferencial específico do Dr. Danilo frente a outros médicos.</td>
+          </tr>
+          <tr>
+            <td><strong>BOF</strong></td>
+            <td>Quente, próximo da decisão</td>
+            <td>CTA direto. WhatsApp em destaque. Urgência suave. Nenhuma barreira de fricção.</td>
+          </tr>
+        </table>
+
+        <p style="margin-top:16px;">Revise os criativos ativos em cada fase com esse critério. Se o TOF estiver com post de oferta ("Agende sua consulta agora"), ele vai afastar audiência fria em vez de aquecê-la. Se o BOF estiver com conteúdo educativo, a pessoa quente não vai entender o que precisa fazer a seguir.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FASE 2 -->
+    <div class="chapter">
+      <div class="chapter-eyebrow">Semanas 2 e 3</div>
+      <h2>Primeiros ajustes com dados</h2>
+
+      <div class="block">
+        <h3><span class="badge p1">P1</span> Monitorar frequência — o sinal mais ignorado</h3>
+        <p>Frequência é o número de vezes que a mesma pessoa vê o mesmo anúncio. Quando sobe demais, o CTR cai, o CPM sobe, e você passa a pagar mais para alcançar pessoas que já estão ignorando o criativo conscientemente. Esse fenômeno tem nome: banner blindness.</p>
+        <p>Os limites saudáveis variam por fase. No TOF, frequência acima de 3.0 em 14 dias é sinal de saturação — hora de adicionar criativos novos. No MOF, o limite é mais flexível, por volta de 5.0. No BOF, frequências mais altas são aceitáveis (até 10.0), porque o público é pequeno e precisa ser impactado mais vezes antes de converter — mas acima de 15, mesmo o BOF começa a saturar.</p>
+        <p>A solução para frequência alta nunca é criar um novo conjunto de anúncios com o mesmo criativo — é adicionar novos criativos dentro do conjunto existente. O algoritmo vai rotacionar automaticamente e distribuir a pressão.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p1">P1</span> Identificar e dobrar nos criativos vencedores</h3>
+        <p>Depois de 7 a 14 dias rodando, vai ficar claro qual criativo está performando melhor em cada conjunto. O critério não é apenas CTR — é a combinação de menor CPM, maior CTR e maior taxa de conversão. O criativo que pontua bem nas três métricas é o vencedor.</p>
+        <p>Quando identificar o vencedor, crie variações dele — mesmo hook com visual diferente, mesmo visual com texto diferente. Não substitua o que está funcionando; adicione variações para que o algoritmo tenha onde ir quando o original começar a saturar.</p>
+        <p>Pause criativos que, após 7 dias e mais de 5.000 impressões, ainda têm CTR abaixo de 1% e zero conversões. Antes disso, não pause — os dados ainda são insuficientes para julgamento.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> Revisar o objetivo do MOF</h3>
+        <p>A campanha de meio de funil está com objetivo de Tráfego. Isso instrui o algoritmo do Meta a otimizar para cliques no link — não necessariamente para pessoas com maior intenção de converter. Dependendo do volume de tráfego que o site do Dr. Danilo já recebe, pode fazer sentido migrar o MOF para o objetivo de Conversões com o evento de visualização de página relevante (como uma página de serviços específica) ou mesmo para Leads, se houver um formulário.</p>
+        <p>A migração só vale a pena se o site tiver volume suficiente para o algoritmo aprender — pelo menos 500 visitantes por semana como referência. Abaixo disso, Tráfego ainda é a opção mais eficiente para o MOF.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FASE 3 -->
+    <div class="chapter">
+      <div class="chapter-eyebrow">Mês 1 completo</div>
+      <h2>Análise de funil e conteúdo orgânico</h2>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> O funil está de fato fluindo?</h3>
+        <p>Um funil bem estruturado no papel pode estar estagnado na prática se cada fase não estiver alimentando a próxima. Ao fim do primeiro mês, responda duas perguntas concretas: quantas pessoas do TOF chegaram ao BOF? E o público do BOF está crescendo ou encolhendo?</p>
+        <p>Se o público do BOF estiver muito pequeno — abaixo de 1.000 pessoas — o funil está vazando. As causas mais comuns são: janela de retenção do público muito curta (exemplo: visitantes dos últimos 14 dias em vez de 60 dias), TOF com engajamento baixo não gerando entrada suficiente, ou MOF não convertendo visualizações em ações rastreáveis.</p>
+        <p>A solução mais simples e de impacto imediato quando o BOF é muito pequeno é aumentar a janela de retenção: de 30 para 60 dias, ou de 60 para 90 dias. Você expande o público qualificado sem alterar o critério de qualidade.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> Usar o conteúdo orgânico do Dr. Danilo como combustível do funil</h3>
+        <p>O Dr. Danilo tem uma estratégia de conteúdo ativa no Instagram. Isso é um ativo de mídia paga que muita agência ignora. Conteúdo orgânico que já performou bem — que gerou engajamento real, comentários, salvamentos — é prova de que aquele tema ressoa com o público. Boostá-lo como anúncio pago não é apenas conveniente; é a aposta mais informada que você pode fazer em criativo, porque elimina a incerteza do zero.</p>
+        <p>Identifique os três posts orgânicos com maior engajamento do último mês (curtidas + comentários + salvamentos). Transforme-os em anúncios pelo Ads Manager — nunca pelo botão "Impulsionar", que dá menos controle de público e de objetivo. Posts educativos vão para o TOF. Posts com depoimento ou resultado vão para o MOF.</p>
+        <p>A consistência de postagem orgânica é também o que garante que o TOF tenha material fresco. Se o Dr. Danilo parar de postar, o topo do funil seca — e a conta paga começa a mostrar os mesmos criativos para as mesmas pessoas até saturar. Mínimo recomendado: três posts por semana.</p>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p2">P2</span> Criar Lookalike a partir dos leads convertidos</h3>
+        <p>Depois de ter uma base de 100 ou mais pacientes ou leads que efetivamente agendaram, o Lookalike 1% construído sobre essa lista é o público mais eficiente que você pode usar no TOF. Em vez de depender de interesses e comportamentos para encontrar pessoas parecidas com o paciente ideal do Dr. Danilo, você usa os próprios pacientes como modelo.</p>
+        <p>A lista precisa ter pelo menos 100 contatos com nome e telefone (ou email) para o Meta conseguir fazer o match. Com 200 ou mais, a qualidade do Lookalike melhora consideravelmente. Quando tiver a lista pronta, crie o Lookalike 1% do Brasil e teste-o em um novo conjunto dentro do TOF, separado dos públicos de interesse. Isso permite comparar os dois e tomar uma decisão baseada em dados.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FASE 4 -->
+    <div class="chapter">
+      <div class="chapter-eyebrow">A partir do mês 2</div>
+      <h2>Escala</h2>
+
+      <div class="block">
+        <h3><span class="badge p3">P3</span> Como escalar orçamento sem quebrar o que funciona</h3>
+        <p>A regra de escala no Meta é diferente do Google. No Meta, aumentos de orçamento maiores do que 20 a 30% por vez podem tirar o conjunto do estado otimizado e jogar ele de volta para o aprendizado — o que normalmente piora o CPL temporariamente antes de melhorar.</p>
+        <p>O processo correto é aumentar 20% do orçamento do conjunto que performa melhor, aguardar de 3 a 5 dias para estabilizar, e só então avaliar se o CPL se manteve. Se manteve, repetir o aumento. Se piorou mais de 30%, voltar ao orçamento anterior. Não tente recuperar resultado ruim aumentando mais orçamento — o problema raramente é orçamento.</p>
+
+        <div class="callout warn">
+          Nunca escale um conjunto que está com frequência alta, CPM subindo ou CTR caindo. Esses são sinais de saturação — mais verba só acelera o problema. Primeiro refresque o criativo, depois escale.
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="badge p3">P3</span> Quando avaliar Advantage+</h3>
+        <p>O Advantage+ Shopping Campaigns e o Advantage+ Audience automatizam público e criativos, delegando mais controle ao algoritmo do Meta. Para uma conta com histórico de conversão razoável, pode gerar resultados melhores do que a estrutura manual — mas é difícil diagnosticar e ajustar quando não está funcionando bem.</p>
+        <p>A recomendação é testar Advantage+ apenas quando a conta tiver pelo menos 50 conversões por mês e a estrutura manual estiver estabilizada com CPA previsível. Crie a campanha Advantage+ com verba separada e adicional — nunca substituindo o que já está funcionando. Teste por quatro semanas antes de comparar resultado com a estrutura manual.</p>
+      </div>
+    </div>
+
+  </div>
+  <!-- /META -->
+
+</div>
+
+<script>
+  function show(platform, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.className = 'nav-btn');
+    document.getElementById('section-' + platform).classList.add('active');
+    btn.classList.add('on-' + platform);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

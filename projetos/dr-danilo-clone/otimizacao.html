@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano de Otimização — Dr. Danilo Matsunaga</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #1a1d27;
+    --bg3: #22263a;
+    --border: #2e3350;
+    --text: #e2e8f0;
+    --muted: #8892b0;
+    --google: #4285f4;
+    --google-light: #1a2f6b;
+    --meta: #1877f2;
+    --meta-light: #0d2a5e;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --accent: #64ffda;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .header-left h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.3px;
+  }
+
+  .header-left p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .header-tabs {
+    display: flex;
+    gap: 8px;
+  }
+
+  .tab-btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active-google {
+    background: var(--google-light);
+    border-color: var(--google);
+    color: #fff;
+  }
+
+  .tab-btn.active-meta {
+    background: var(--meta-light);
+    border-color: var(--meta);
+    color: #fff;
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* PHASE */
+  .phase {
+    margin-bottom: 40px;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .badge-now   { background: #dc262630; color: #f87171; border: 1px solid #dc262650; }
+  .badge-week  { background: #d9770630; color: #fb923c; border: 1px solid #d9770650; }
+  .badge-month { background: #ca8a0430; color: #fbbf24; border: 1px solid #ca8a0450; }
+  .badge-later { background: #7c3aed30; color: #c084fc; border: 1px solid #7c3aed50; }
+
+  .phase-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .card-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+  }
+
+  .card-header:hover { background: var(--bg3); }
+  .card.open .card-header { border-bottom-color: var(--border); }
+
+  .priority {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  .p0 { background: #dc262625; color: #f87171; border: 1px solid #dc262640; }
+  .p1 { background: #d9770625; color: #fb923c; border: 1px solid #d9770640; }
+  .p2 { background: #ca8a0425; color: #fbbf24; border: 1px solid #ca8a0440; }
+  .p3 { background: #16a34a25; color: #4ade80; border: 1px solid #16a34a40; }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .card-status {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+
+  .card.open .chevron { transform: rotate(90deg); }
+
+  .card-body {
+    display: none;
+    padding: 16px 18px 18px;
+  }
+
+  .card.open .card-body { display: block; }
+
+  .card-body p {
+    color: var(--muted);
+    font-size: 13.5px;
+    margin-bottom: 12px;
+  }
+
+  .card-body p:last-child { margin-bottom: 0; }
+
+  .card-body strong { color: var(--text); }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 2px 0;
+    transition: color 0.15s;
+  }
+
+  .checklist li:hover { color: var(--text); }
+
+  .checklist li.done { color: #4ade8090; text-decoration: line-through; }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: all 0.15s;
+    background: transparent;
+  }
+
+  .checklist li.done .check-box {
+    background: #16a34a40;
+    border-color: #16a34a;
+    color: #4ade80;
+  }
+
+  /* ALERT */
+  .alert {
+    display: flex;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .alert-red { background: #dc262615; border: 1px solid #dc262635; color: #f87171; }
+  .alert-yellow { background: #ca8a0415; border: 1px solid #ca8a0435; color: #fbbf24; }
+  .alert-green { background: #16a34a15; border: 1px solid #16a34a35; color: #4ade80; }
+  .alert-blue { background: #3b82f615; border: 1px solid #3b82f635; color: #93c5fd; }
+
+  .alert-icon { font-size: 15px; flex-shrink: 0; }
+
+  /* TABLE */
+  .mini-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  .mini-table th {
+    text-align: left;
+    padding: 8px 12px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mini-table td {
+    padding: 9px 12px;
+    color: var(--text);
+    border-bottom: 1px solid #1e2235;
+    vertical-align: top;
+  }
+
+  .mini-table tr:last-child td { border-bottom: none; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .tag-green { background: #16a34a25; color: #4ade80; }
+  .tag-yellow { background: #ca8a0425; color: #fbbf24; }
+  .tag-red { background: #dc262625; color: #f87171; }
+  .tag-purple { background: #7c3aed25; color: #c084fc; }
+  .tag-blue { background: #3b82f625; color: #93c5fd; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--google);
+    width: 0%;
+    transition: width 0.3s;
+  }
+
+  .progress-fill.meta { background: var(--meta); }
+
+  /* CODE */
+  code {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Plano de Otimização — Dr. Danilo Matsunaga</h1>
+    <p>Atualizado em 05/05/2026 · Sigma Agência</p>
+  </div>
+  <div class="header-tabs">
+    <button class="tab-btn active-google" onclick="switchTab('google')">🔵 Google Ads</button>
+    <button class="tab-btn" onclick="switchTab('meta')">🔷 Meta Ads</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ======================== GOOGLE ADS ======================== -->
+  <div class="section active" id="section-google">
+
+    <div class="alert alert-yellow">
+      <span class="alert-icon">⚠️</span>
+      <span><strong>Conta nova em learning period.</strong> 4 campanhas publicadas hoje (05/05/2026). Maximizar Conversões precisa de 14 dias sem alterações grandes para sair do aprendizado. Não mexa no lance nem pause campanhas por impulso.</span>
+    </div>
+
+    <!-- FASE 1 -->
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-badge badge-now">Agora</span>
+        <span class="phase-title">Dias 1–7 · Validação de base</span>
+      </div>
+
+      <div class="card open" id="card-g1">
+        <div class="card-header" onclick="toggleCard('card-g1')">
+          <span class="priority p0">P0</span>
+          <span class="card-title">Validar a conversão "Clique WhatsApp"</span>
+          <span class="card-status">Crítico</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-red">
+            <span class="alert-icon">🚨</span>
+            <span>Se a conversão estiver errada, o algoritmo aprende na direção errada. Isso é P0 antes de qualquer otimização.</span>
+          </div>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Abrir Google Ads → Metas → Conversões → confirmar se "Clique WhatsApp" aparece com registros</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Usar Tag Assistant no Chrome para verificar que o evento está disparando ao clicar no botão de WhatsApp</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Comparar número de conversões no Google Ads com o que o Dr. Danilo está recebendo no WhatsApp</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Verificar se não há conversão duplicada (mesmo clique contando 2 vezes)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Confirmar que o GA4 também está recebendo os eventos corretamente</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-g2">
+        <div class="card-header" onclick="toggleCard('card-g2')">
+          <span class="priority p0">P0</span>
+          <span class="card-title">Confirmar que campanhas estão entregando</span>
+          <span class="card-status">Monitoramento diário</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Todas as 4 campanhas com status <strong>Ativa</strong> (sem "Reprovado", "Limitada por orçamento" ou "Suspenso")</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>RSA de cada campanha com status <strong>Qualificado</strong> — anúncio reprovado = campanha sem entregar</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Sitelinks saírem de "Em análise" — acompanhar aprovação nos próximos dias</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Se "Reposição Hormonal" for reprovado por política de saúde, trocar por "Tratamento Hormonal"</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-g3">
+        <div class="card-header" onclick="toggleCard('card-g3')">
+          <span class="priority p0">P0</span>
+          <span class="card-title">Confirmar que o Dr. Danilo está respondendo os leads</span>
+          <span class="card-status">Operacional</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>A melhor conta de Google Ads do mundo não converte se o lead cai no WhatsApp e fica horas sem resposta. Médico especialista tem lead quente — ele pesquisou, clicou, quis falar. Se não for atendido rápido, procura outro.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>WhatsApp com notificações ativas e sendo monitorado durante horário comercial</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Mensagem automática de boas-vindas configurada no WhatsApp Business</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Tempo de resposta máximo de 30 minutos em horário comercial</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-g4">
+        <div class="card-header" onclick="toggleCard('card-g4')">
+          <span class="priority p1">P1</span>
+          <span class="card-title">Adicionar Call Asset (extensão de chamada)</span>
+          <span class="card-status">Ainda não existe na conta</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Médico especialista tem parcela de leads que prefere <strong>ligar antes</strong> de ir pro WhatsApp. Sem Call Asset, esses leads ou somem ou clicam no anúncio sem converter.</p>
+          <p>Rota: <code>Campanhas → Recursos → Criar recurso → Ligar para</code></p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Criar Call Asset no nível Conta com o número da clínica/secretária</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Verificar horário de exibição (deixar apenas no horário em que o telefone é atendido)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Adicionar conversão "Clique no telefone" se quiser rastrear</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-badge badge-week">Semana 2–3</span>
+        <span class="phase-title">Primeiras otimizações com dados reais</span>
+      </div>
+
+      <div class="card" id="card-g5">
+        <div class="card-header" onclick="toggleCard('card-g5')">
+          <span class="priority p1">P1</span>
+          <span class="card-title">Revisar Termos de Pesquisa e negativar</span>
+          <span class="card-status">Toda semana</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Rota: <code>Campanhas → Palavras-chave → Termos de pesquisa</code> — filtrar últimos 7 dias.</p>
+          <p><strong>O que negativar imediatamente:</strong></p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Termos com "plano de saúde", "convênio", "SUS", "gratuito", "barato", "grátis"</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Termos com "curso", "faculdade", "formação", "diploma", "CRM"</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Termos de outras especialidades: "cardiologista", "dermatologista", "psiquiatra"</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Termos de cidades erradas aparecendo nas campanhas erradas</li>
+          </ul>
+          <p style="margin-top:12px;"><strong>O que promover para keyword explícita:</strong></p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Termos bons com alto CTR que ainda não são KWs → adicionar como exata ou frase</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-g6">
+        <div class="card-header" onclick="toggleCard('card-g6')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Adicionar Image Assets (foto real)</span>
+          <span class="card-status">Ainda não existe</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Image Assets expandem o espaço do anúncio na SERP. Para médico especialista, <strong>foto real do Dr. Danilo funciona muito melhor</strong> do que foto de banco de imagem.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Foto profissional do Dr. Danilo (jaleco ou consultório) — mínimo 1200×628px</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Foto do consultório/recepção</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Versão quadrada das mesmas fotos (1200×1200px)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Adicionar no nível Conta → aplica em todas as campanhas</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-g7">
+        <div class="card-header" onclick="toggleCard('card-g7')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Adicionar Structured Snippets (Snippets estruturados)</span>
+          <span class="card-status">Ainda não existe</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Snippets estruturados mostram uma lista de serviços ou características logo abaixo do anúncio. Aparecem em desktop com frequência alta.</p>
+          <p>Rota: <code>Recursos → Criar recurso → Snippet estruturado</code></p>
+          <p><strong>Cabeçalho recomendado: "Serviços"</strong></p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Reposição Hormonal Masculina</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Reposição Hormonal Feminina</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Tratamento de Andropausa</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Tratamento de Menopausa</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Otimização de Testosterona</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Consulta Presencial e Online</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-g8">
+        <div class="card-header" onclick="toggleCard('card-g8')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Criar RSAs adicionais (meta: 3 por campanha)</span>
+          <span class="card-status">Hoje: 1 RSA por campanha</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>O Google usa múltiplos RSAs para testar qual combinação performa melhor. Com apenas 1 RSA por campanha, o algoritmo não tem variação para testar.</p>
+          <p><strong>Estrutura dos 3 RSAs por campanha:</strong></p>
+          <table class="mini-table">
+            <tr><th>RSA</th><th>Foco</th><th>Abordagem</th></tr>
+            <tr><td><span class="tag tag-blue">RSA 1</span></td><td>Serviço / Especialidade</td><td>Palavra-chave principal + credencial do Dr. Danilo</td></tr>
+            <tr><td><span class="tag tag-purple">RSA 2</span></td><td>Benefício / Resultado</td><td>Transformação que o paciente busca (energia, disposição, qualidade de vida)</td></tr>
+            <tr><td><span class="tag tag-yellow">RSA 3</span></td><td>Acesso / Urgência</td><td>Facilidade de agendar, atendimento na cidade, WhatsApp direto</td></tr>
+          </table>
+          <ul class="checklist" style="margin-top:14px;">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>RSA 2 e RSA 3 criados para campanha SP</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>RSA 2 e RSA 3 criados para campanha Campinas</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>RSA 2 e RSA 3 criados para campanha Goiânia</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>RSA 2 e RSA 3 criados para campanha Piracicaba</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-badge badge-month">Mês 1</span>
+        <span class="phase-title">Análise de performance e consolidação</span>
+      </div>
+
+      <div class="card" id="card-g9">
+        <div class="card-header" onclick="toggleCard('card-g9')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Avaliar Asset Performance dos RSAs</span>
+          <span class="card-status">Após 14+ dias</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Rota: <code>Campanhas → Anúncios → clicar no RSA → ver avaliação de cada asset</code></p>
+          <table class="mini-table">
+            <tr><th>Avaliação</th><th>O que significa</th><th>Ação</th></tr>
+            <tr><td><span class="tag tag-green">Best</span></td><td>Google está priorizando</td><td>Manter, usar como modelo</td></tr>
+            <tr><td><span class="tag tag-blue">Good</span></td><td>Performando bem</td><td>Manter</td></tr>
+            <tr><td><span class="tag tag-yellow">Low</span></td><td>Google parou de usar</td><td><strong>Substituir imediatamente</strong></td></tr>
+          </table>
+          <ul class="checklist" style="margin-top:14px;">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Revisar Asset Performance de todos os RSAs após 14 dias</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Substituir todos os assets marcados como "Low"</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Verificar se Ad Strength está em "Bom" ou "Excelente" em todas as campanhas</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-g10">
+        <div class="card-header" onclick="toggleCard('card-g10')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Revisar distribuição de gasto por campanha</span>
+          <span class="card-status">Após 7 dias</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Depois de 7 dias, compare o gasto real vs o orçamento disponível. Identifique qual campanha tem mais potencial de escala.</p>
+          <table class="mini-table">
+            <tr><th>Campanha</th><th>Orçamento</th><th>Sinal de escalar se...</th></tr>
+            <tr><td>SP</td><td>R$55/dia</td><td>Limitada por orçamento + CPA saudável</td></tr>
+            <tr><td>Campinas</td><td>R$30/dia</td><td>Limitada por orçamento + CPA saudável</td></tr>
+            <tr><td>Goiânia</td><td>R$25/dia</td><td>Limitada por orçamento + CPA saudável</td></tr>
+            <tr><td>Piracicaba</td><td>R$15/dia</td><td>⚠️ Orçamento muito baixo. Se não gerar dados, avaliar encerrar</td></tr>
+          </table>
+          <ul class="checklist" style="margin-top:14px;">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Aumentar SP até R$75/dia se estiver limitada e convertendo</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Avaliar Piracicaba: se não gerar nem 1 conversão em 30 dias com R$15/dia, pausar e redirecionar verba para SP</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Nunca aumentar mais de 20% do orçamento por vez</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 4 -->
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-badge badge-later">Mês 2+</span>
+        <span class="phase-title">Escala e otimização avançada</span>
+      </div>
+
+      <div class="card" id="card-g11">
+        <div class="card-header" onclick="toggleCard('card-g11')">
+          <span class="priority p3">P3</span>
+          <span class="card-title">Migrar de Maximizar Conversões para tCPA</span>
+          <span class="card-status">Quando tiver 30+ conversões</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-blue">
+            <span class="alert-icon">ℹ️</span>
+            <span><strong>Não faça antes de 30 conversões acumuladas.</strong> O algoritmo precisa de histórico para trabalhar com meta de CPA.</span>
+          </div>
+          <p><strong>Regra de ouro do tCPA:</strong> defina o alvo em <strong>120% do CPA real</strong>. Se o CPA histórico for R$60, o tCPA inicial deve ser R$72 — nunca abaixo do histórico.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Atingir 30+ conversões acumuladas na conta</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Calcular CPA médio real do primeiro mês</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Definir tCPA = CPA real × 1.2</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Migrar uma campanha de cada vez (começar por SP)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-g12">
+        <div class="card-header" onclick="toggleCard('card-g12')">
+          <span class="priority p3">P3</span>
+          <span class="card-title">Avaliar campanha de Display / Remarketing</span>
+          <span class="card-status">Mês 2 em diante</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Só faz sentido depois que as campanhas de Pesquisa estiverem estabilizadas e gerando volume. Display sem remarketing de base é gasto sem retorno claro.</p>
+          <p><strong>Pré-requisitos antes de ativar Display:</strong></p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Pesquisa gerando pelo menos 10 conversões/mês</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Lista de remarketing com 100+ usuários (visitantes do site)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Criativos reais disponíveis (foto do Dr. Danilo + textos)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /GOOGLE -->
+
+
+  <!-- ======================== META ADS ======================== -->
+  <div class="section" id="section-meta">
+
+    <div class="alert alert-blue">
+      <span class="alert-icon">ℹ️</span>
+      <span><strong>Estrutura atual do funil:</strong> TOF Engajamento (R$50/dia, 1 conjunto) → MOF Tráfego (R$25/dia, 1 conjunto) → BOF WhatsApp (R$45/dia, 3 conjuntos de R$15) + TOF Instagram (R$20/dia, 4 conjuntos de R$5). Total: R$140/dia.</span>
+    </div>
+
+    <!-- FASE 1 -->
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-badge badge-now">Agora</span>
+        <span class="phase-title">Esta semana · Validação e base</span>
+      </div>
+
+      <div class="card open" id="card-m1">
+        <div class="card-header" onclick="toggleCard('card-m1')">
+          <span class="priority p0">P0</span>
+          <span class="card-title">Validar Pixel e eventos de conversão</span>
+          <span class="card-status">Crítico</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Abrir Events Manager → confirmar que o Pixel está recebendo eventos</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Evento "Contact" (clique WhatsApp) disparando corretamente</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Event Match Quality acima de 6.0 — se abaixo, configurar CAPI ou adicionar mais parâmetros ao evento</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Pixel Helper (extensão Chrome) confirmando disparo em tempo real no site</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-m2">
+        <div class="card-header" onclick="toggleCard('card-m2')">
+          <span class="priority p0">P0</span>
+          <span class="card-title">Revisar públicos do BOF — estão quentes de verdade?</span>
+          <span class="card-status">Fundamental</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>BOF com 3 conjuntos de R$15/dia só faz sentido se os públicos forem realmente quentes. Verifique o que está dentro de cada conjunto.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>BOF Conjunto 1: público correto? (ex: visitantes do site últimos 30 dias, engajamento no perfil)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>BOF Conjunto 2: público correto? (ex: visualizou vídeo 75%, salvou post)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>BOF Conjunto 3: público correto? (ex: lista de contatos, lookalike de clientes)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Tamanho de cada público — mínimo de 1.000 pessoas para o algoritmo trabalhar</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Verificar sobreposição de público entre os 3 conjuntos (Audience Overlap no Ads Manager)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-m3">
+        <div class="card-header" onclick="toggleCard('card-m3')">
+          <span class="priority p1">P1</span>
+          <span class="card-title">Validar criativos ativos em cada campanha</span>
+          <span class="card-status">Qualidade</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Para cada fase do funil, o criativo precisa falar com o estado de consciência correto do público.</p>
+          <table class="mini-table">
+            <tr><th>Fase</th><th>Estado do público</th><th>Criativo ideal</th></tr>
+            <tr><td><span class="tag tag-blue">TOF</span></td><td>Não conhece o Dr. Danilo</td><td>Educativo, problema/dor, hook forte nos 3 primeiros segundos</td></tr>
+            <tr><td><span class="tag tag-purple">MOF</span></td><td>Viu conteúdo, está considerando</td><td>Prova social, depoimento, diferencial do Dr. Danilo</td></tr>
+            <tr><td><span class="tag tag-yellow">BOF</span></td><td>Quente, pronto pra decidir</td><td>Oferta direta, CTA claro, urgência suave, WhatsApp em destaque</td></tr>
+          </table>
+          <ul class="checklist" style="margin-top:14px;">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>TOF tem criativo educativo? (não pode ser oferta direta)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>MOF tem depoimento ou prova social real?</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>BOF tem CTA claro para WhatsApp com fricção mínima?</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Cada conjunto tem pelo menos 3–5 variações de criativo (Facebook testa automaticamente)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-badge badge-week">Semana 2–3</span>
+        <span class="phase-title">Primeiros ajustes com dados</span>
+      </div>
+
+      <div class="card" id="card-m4">
+        <div class="card-header" onclick="toggleCard('card-m4')">
+          <span class="priority p1">P1</span>
+          <span class="card-title">Analisar frequência — evitar saturação</span>
+          <span class="card-status">Monitorar semanalmente</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Frequência alta = público vendo o mesmo anúncio muitas vezes = banner blindness = CTR caindo = CPM subindo.</p>
+          <table class="mini-table">
+            <tr><th>Fase</th><th>Frequência saudável</th><th>Sinal de alerta</th></tr>
+            <tr><td><span class="tag tag-blue">TOF</span></td><td>1.5–2.5 no período</td><td>Acima de 3.0 → trocar criativo</td></tr>
+            <tr><td><span class="tag tag-purple">MOF</span></td><td>2.0–4.0 no período</td><td>Acima de 5.0 → trocar criativo</td></tr>
+            <tr><td><span class="tag tag-yellow">BOF</span></td><td>5.0–10.0 (aceitável)</td><td>Acima de 15 → expandir público ou trocar</td></tr>
+          </table>
+          <ul class="checklist" style="margin-top:14px;">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Verificar frequência de cada conjunto após 14 dias</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Se TOF com frequência &gt;3: adicionar novos criativos (não duplicar conjunto)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Se BOF com frequência &gt;15 e baixa conversão: público saturou, expandir ou refrescar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-m5">
+        <div class="card-header" onclick="toggleCard('card-m5')">
+          <span class="priority p1">P1</span>
+          <span class="card-title">Identificar criativos vencedores (Winner Ads)</span>
+          <span class="card-status">Toda semana</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Regra simples: o criativo que gera mais resultado com menor custo é o vencedor. Dobre nele — não divida orçamento igual entre todos.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Identificar o criativo com menor CPM + maior CTR + maior taxa de conversão em cada conjunto</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Criar variações do criativo vencedor (mesmo hook, diferente visual / mesmo visual, diferente texto)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Pausar criativos com CTR abaixo de 1% e sem conversão após 7 dias e 5k+ impressões</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Nunca pausar criativo com menos de 3 dias rodando — dados insuficientes</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-m6">
+        <div class="card-header" onclick="toggleCard('card-m6')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Revisar objetivo das campanhas vs. resultado real</span>
+          <span class="card-status">Estrutural</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>O objetivo da campanha instrui o algoritmo do que otimizar. Confirme que está correto para cada fase.</p>
+          <table class="mini-table">
+            <tr><th>Campanha</th><th>Objetivo atual</th><th>Correto?</th></tr>
+            <tr><td>TOF Engajamento</td><td>Engajamento</td><td><span class="tag tag-green">✓ Correto</span></td></tr>
+            <tr><td>TOF Instagram</td><td>Engajamento</td><td><span class="tag tag-green">✓ Correto</span></td></tr>
+            <tr><td>MOF Tráfego</td><td>Tráfego</td><td><span class="tag tag-yellow">⚠ Avaliar</span> — se o site converter, migrar para Conversões</td></tr>
+            <tr><td>BOF WhatsApp</td><td>?</td><td>Verificar se está em Mensagens ou Conversões com evento Contact</td></tr>
+          </table>
+          <ul class="checklist" style="margin-top:14px;">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>BOF está otimizando para o evento correto (Contact / clique WhatsApp)?</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>MOF: se site tiver 500+ visitantes/semana, testar migração para Conversões</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-badge badge-month">Mês 1</span>
+        <span class="phase-title">Análise completa e ajustes de escala</span>
+      </div>
+
+      <div class="card" id="card-m7">
+        <div class="card-header" onclick="toggleCard('card-m7')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Avaliar se o MOF está de fato nutrindo o BOF</span>
+          <span class="card-status">Análise de funil</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>O funil só funciona se cada fase alimenta a próxima. Verifique os tamanhos de público em cada etapa.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Quantos usuários passaram do TOF para o MOF no último mês? (visitantes do site, engajamento)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>O público do BOF está crescendo ou estagnado?</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Se BOF com público muito pequeno (&lt;1.000): aumentar janela de retenção (ex: 60 dias → 90 dias)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Se TOF gerando muito engajamento mas BOF não converte: problema de criativo ou público no BOF</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-m8">
+        <div class="card-header" onclick="toggleCard('card-m8')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Estratégia de conteúdo orgânico → combustível do TOF</span>
+          <span class="card-status">Dr. Danilo tem conteúdo ativo</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>O Dr. Danilo tem estratégia de conteúdo ativa no Instagram. Isso é um ativo poderoso para o Meta Ads — conteúdo orgânico que performa bem pode (e deve) virar anúncio pago.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Identificar os posts orgânicos com mais engajamento do último mês (curtidas + comentários + salvamentos)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Transformar os top 3 posts em anúncios pagos (boost via Ads Manager, não pelo botão "Impulsionar")</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Usar posts educativos de alta performance como criativo de TOF</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Usar posts de prova social / depoimento como criativo de MOF</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Garantir que o Dr. Danilo está postando pelo menos 3x/semana (funil sem topo seca)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-m9">
+        <div class="card-header" onclick="toggleCard('card-m9')">
+          <span class="priority p2">P2</span>
+          <span class="card-title">Testar Lookalike de leads convertidos</span>
+          <span class="card-status">Após 50+ leads no período</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Depois de ter uma base de leads que realmente agendaram/viraram clientes, criar um Lookalike 1% desse público é a forma mais eficiente de escalar o TOF.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Criar lista de clientes (nome + telefone / email) com pelo menos 100 pessoas no Ads Manager</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Criar Lookalike 1% do Brasil a partir dessa lista</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Testar Lookalike 1% no TOF em paralelo com o público aberto atual</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Não mesclar Lookalike com interesse no mesmo conjunto — separe para poder comparar</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 4 -->
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-badge badge-later">Mês 2+</span>
+        <span class="phase-title">Escala avançada</span>
+      </div>
+
+      <div class="card" id="card-m10">
+        <div class="card-header" onclick="toggleCard('card-m10')">
+          <span class="priority p3">P3</span>
+          <span class="card-title">Escalar orçamento das campanhas que convertem</span>
+          <span class="card-status">Com dados históricos</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-yellow">
+            <span class="alert-icon">⚠️</span>
+            <span>Nunca aumente orçamento mais de 20–30% por vez no Meta. Aumentos grandes reiniciam o aprendizado. Aguarde 3–5 dias entre cada aumento.</span>
+          </div>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Identificar qual campanha/conjunto tem melhor CPL (custo por lead)</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Aumentar 20% do orçamento desse conjunto e aguardar 5 dias</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Se CPL se mantiver: repetir aumento de 20%</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Se CPL piorar &gt;30%: voltar ao orçamento anterior</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="card-m11">
+        <div class="card-header" onclick="toggleCard('card-m11')">
+          <span class="priority p3">P3</span>
+          <span class="card-title">Avaliar migração para Advantage+ (campanha de compras / leads)</span>
+          <span class="card-status">Testar com verba separada</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="card-body">
+          <p>Advantage+ Shopping Campaigns e Advantage+ Audience automatizam público e criativos. Para médico especialista, pode funcionar especialmente no BOF quando já há histórico de conversão.</p>
+          <ul class="checklist">
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Ter pelo menos 50 conversões/mês na conta antes de testar Advantage+</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Criar campanha Advantage+ separada com verba nova — nunca substituir o que está funcionando</li>
+            <li onclick="toggleItem(this)"><span class="check-box"></span>Testar por 4 semanas antes de comparar resultado com a estrutura manual</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /META -->
+
+</div>
+
+<script>
+  function switchTab(platform) {
+    const btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(b => b.className = 'tab-btn');
+
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(s => s.classList.remove('active'));
+
+    document.getElementById('section-' + platform).classList.add('active');
+
+    const activeBtn = Array.from(btns).find(b => b.getAttribute('onclick').includes(platform));
+    activeBtn.classList.add('active-' + platform);
+  }
+
+  function toggleCard(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  function toggleItem(li) {
+    li.classList.toggle('done');
+    const box = li.querySelector('.check-box');
+    box.textContent = li.classList.contains('done') ? '✓' : '';
+  }
+
+  // Persist checks in localStorage
+  document.querySelectorAll('.checklist li').forEach((li, i) => {
+    const key = 'check_' + i;
+    if (localStorage.getItem(key) === '1') {
+      li.classList.add('done');
+      li.querySelector('.check-box').textContent = '✓';
+    }
+    li.addEventListener('click', () => {
+      localStorage.setItem(key, li.classList.contains('done') ? '1' : '0');
+    });
+  });
+</script>
+
+</body>
+</html>
