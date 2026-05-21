@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Clínica — Dr. Danilo Matsunaga</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --card2: #21253a;
+    --border: #2a2f45;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-purple: #8b5cf6;
+    --accent-orange: #f59e0b;
+    --accent-red: #ef4444;
+    --meta: #1877f2;
+    --google: #ea4335;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding: 32px 24px; min-height: 100vh; }
+
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .header p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .badge { display: inline-block; background: var(--card2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; }
+  .kpi.highlight { border-color: var(--accent-blue); background: linear-gradient(135deg, #1a1d27, #1e2740); }
+  .kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 30px; font-weight: 700; letter-spacing: -1px; }
+  .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .blue { color: var(--accent-blue); }
+  .green { color: var(--accent-green); }
+  .orange { color: var(--accent-orange); }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Canal cards */
+  .canal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  .canal-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+  .canal-card.meta { border-top: 3px solid var(--meta); }
+  .canal-card.google { border-top: 3px solid var(--google); }
+  .canal-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .canal-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+  .canal-icon.meta { background: rgba(24,119,242,0.15); color: var(--meta); }
+  .canal-icon.google { background: rgba(234,67,53,0.15); color: var(--google); }
+  .canal-name { font-size: 16px; font-weight: 700; }
+  .canal-period { font-size: 11px; color: var(--muted); }
+  .canal-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .canal-stat { background: var(--card2); border-radius: 10px; padding: 14px 12px; text-align: center; }
+  .canal-stat-val { font-size: 20px; font-weight: 700; }
+  .canal-stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  /* Table */
+  .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 24px; }
+  .table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .table-header-title { font-size: 14px; font-weight: 600; }
+  .table-header-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; }
+  .tag-meta { background: rgba(24,119,242,0.15); color: var(--meta); }
+  .tag-google { background: rgba(234,67,53,0.15); color: var(--google); }
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 10px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+  td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid rgba(42,47,69,0.5); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .nome-camp { max-width: 280px; }
+  .nome-camp small { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .val-pos { color: var(--accent-green); font-weight: 600; }
+  .val-mid { color: var(--accent-orange); font-weight: 600; }
+  .val-neg { color: var(--accent-red); font-weight: 600; }
+  .total-row td { background: rgba(59,130,246,0.06); font-weight: 700; border-top: 1px solid var(--accent-blue) !important; }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+  .status-active { background: var(--accent-green); }
+  .status-inactive { background: var(--muted); }
+  .status-paused { background: var(--accent-orange); }
+
+  /* Funil bars */
+  .funil-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
+  .funil-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
+  .funil-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 8px; }
+  .funil-val { font-size: 22px; font-weight: 700; }
+  .funil-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  @media (max-width: 768px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+    .canal-grid { grid-template-columns: 1fr; }
+    .funil-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Relatório de Performance — Clínica</h1>
+  <p>Dr. Danilo Matsunaga · Campanhas de Consulta</p>
+  <div class="badge">Meta Ads: 18 fev 2026 – 21 mai 2026 &nbsp;|&nbsp; Google Ads: 4 jun 2025 – 21 mai 2026</div>
+</div>
+
+<!-- KPIs gerais -->
+<div class="kpi-grid">
+  <div class="kpi highlight">
+    <div class="kpi-label">Total Investido</div>
+    <div class="kpi-value blue">R$ 24.090</div>
+    <div class="kpi-sub">Meta R$21.909 + Google R$2.181</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Mensagens Geradas</div>
+    <div class="kpi-value green">1.032</div>
+    <div class="kpi-sub">Meta 932 + Google 100</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Custo por Mensagem</div>
+    <div class="kpi-value orange">R$ 23,34</div>
+    <div class="kpi-sub">CPL médio geral combinado</div>
+  </div>
+</div>
+
+<!-- Por canal -->
+<div class="section-title">Por canal</div>
+<div class="canal-grid">
+  <div class="canal-card meta">
+    <div class="canal-header">
+      <div class="canal-icon meta">f</div>
+      <div>
+        <div class="canal-name">Meta Ads</div>
+        <div class="canal-period">18 fev – 21 mai 2026</div>
+      </div>
+    </div>
+    <div class="canal-stats">
+      <div class="canal-stat">
+        <div class="canal-stat-val blue">R$ 21.909</div>
+        <div class="canal-stat-lbl">Investido</div>
+      </div>
+      <div class="canal-stat">
+        <div class="canal-stat-val green">932</div>
+        <div class="canal-stat-lbl">Conversas</div>
+      </div>
+      <div class="canal-stat">
+        <div class="canal-stat-val orange">R$ 23,51</div>
+        <div class="canal-stat-lbl">CPL</div>
+      </div>
+    </div>
+  </div>
+  <div class="canal-card google">
+    <div class="canal-header">
+      <div class="canal-icon google">G</div>
+      <div>
+        <div class="canal-name">Google Ads</div>
+        <div class="canal-period">4 jun 2025 – 21 mai 2026</div>
+      </div>
+    </div>
+    <div class="canal-stats">
+      <div class="canal-stat">
+        <div class="canal-stat-val blue">R$ 2.181</div>
+        <div class="canal-stat-lbl">Investido</div>
+      </div>
+      <div class="canal-stat">
+        <div class="canal-stat-val green">100</div>
+        <div class="canal-stat-lbl">Leads</div>
+      </div>
+      <div class="canal-stat">
+        <div class="canal-stat-val val-pos">R$ 21,81</div>
+        <div class="canal-stat-lbl">CPL</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- META - Campanhas -->
+<div class="section">
+  <div class="section-title">Meta Ads — campanhas</div>
+
+  <!-- Funil antigo -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-header-title">Funil Antigo (MI Agency)</span>
+      <span class="table-header-badge tag-meta">fev – mar 2026</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Campanha</th>
+          <th>Status</th>
+          <th>Investido</th>
+          <th>Conversas</th>
+          <th>CPL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="nome-camp">ABO FRIO — Goiânia 18/02</td>
+          <td><span class="status-dot status-paused"></span>Pausada</td>
+          <td>R$ 880,45</td>
+          <td>109</td>
+          <td class="val-pos">R$ 8,08</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">CBO FRIO — Goiânia 18/02</td>
+          <td><span class="status-dot status-inactive"></span>Inativa</td>
+          <td>R$ 1.301,91</td>
+          <td>197</td>
+          <td class="val-pos">R$ 6,61</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">ABO FRIO — SP Alphaville 03/03</td>
+          <td><span class="status-dot status-paused"></span>Pausada</td>
+          <td>R$ 1.460,44</td>
+          <td>28</td>
+          <td class="val-mid">R$ 52,16</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">CBO FRIO — SP Alphaville 06/03</td>
+          <td><span class="status-dot status-inactive"></span>Inativa</td>
+          <td>R$ 1.206,74</td>
+          <td>19</td>
+          <td class="val-mid">R$ 63,51</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">ABO FRIO — SP Alphaville 21/02</td>
+          <td><span class="status-dot status-inactive"></span>Inativa</td>
+          <td>R$ 599,30</td>
+          <td>10</td>
+          <td class="val-mid">R$ 59,93</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">Demais (SP 18/02, 25/02, CBO SP)</td>
+          <td><span class="status-dot status-inactive"></span>Inativas</td>
+          <td>R$ 1.287,68</td>
+          <td>13</td>
+          <td class="val-mid">R$ 99,05</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>SUBTOTAL Funil Antigo</strong></td>
+          <td></td>
+          <td><strong>R$ 6.736,52</strong></td>
+          <td><strong>376</strong></td>
+          <td><strong class="val-pos">R$ 17,91</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Funil Cazimi -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-header-title">Funil Cazimi (atual)</span>
+      <span class="table-header-badge tag-meta">mai 2026</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Campanha</th>
+          <th>Etapa</th>
+          <th>Status</th>
+          <th>Investido</th>
+          <th>Resultado</th>
+          <th>CPL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="nome-camp">CONS [CAZIMI] Teste de Criativos<small>Mensagens diretas — ABO</small></td>
+          <td>Fundo</td>
+          <td><span class="status-dot status-active"></span>Ativo</td>
+          <td>R$ 10.457,12</td>
+          <td>428 conversas</td>
+          <td class="val-mid">R$ 24,43</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">CONS Mensagem WhatsApp<small>Fundo de funil</small></td>
+          <td>Fundo</td>
+          <td><span class="status-dot status-active"></span>Ativo</td>
+          <td>R$ 935,37</td>
+          <td>120 conversas</td>
+          <td class="val-pos">R$ 7,79</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">CAZIMI Funil Visitas ao Instagram<small>Retargeting / aquecimento</small></td>
+          <td>Meio</td>
+          <td><span class="status-dot status-inactive"></span>Inativa</td>
+          <td>R$ 2.547,74</td>
+          <td>8 conversas</td>
+          <td class="val-neg">R$ 318,47</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">CONS Tráfego pro site<small>Meio de funil — LPVs</small></td>
+          <td>Meio</td>
+          <td><span class="status-dot status-active"></span>Ativo</td>
+          <td>R$ 418,43</td>
+          <td>1.539 visitas</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td class="nome-camp">CONS Engajamento<small>Topo de funil — ThruPlays</small></td>
+          <td>Topo</td>
+          <td><span class="status-dot status-active"></span>Ativo</td>
+          <td>R$ 813,89</td>
+          <td>99.584 views</td>
+          <td>—</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="3"><strong>SUBTOTAL Funil Cazimi</strong></td>
+          <td><strong>R$ 15.172,55</strong></td>
+          <td><strong>556 conversas</strong></td>
+          <td><strong class="val-mid">R$ 27,29</strong></td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="3"><strong>TOTAL META ADS</strong></td>
+          <td><strong>R$ 21.909,07</strong></td>
+          <td><strong>932 conversas</strong></td>
+          <td><strong class="val-mid">R$ 23,51</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- GOOGLE ADS - Campanhas -->
+<div class="section">
+  <div class="section-title">Google Ads — campanhas</div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-header-title">Search — Consultas por cidade</span>
+      <span class="table-header-badge tag-google">jun 2025 – mai 2026</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Campanha</th>
+          <th>Status</th>
+          <th>Investido</th>
+          <th>Leads</th>
+          <th>Taxa conv.</th>
+          <th>CPL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dr. Danilo — São Paulo</td>
+          <td><span class="status-dot status-active"></span>Ativo</td>
+          <td>R$ 931,92</td>
+          <td>78</td>
+          <td>19,6%</td>
+          <td class="val-pos">R$ 11,95</td>
+        </tr>
+        <tr>
+          <td>Dr. Danilo — Campinas</td>
+          <td><span class="status-dot status-active"></span>Ativo</td>
+          <td>R$ 540,95</td>
+          <td>10</td>
+          <td>11,9%</td>
+          <td class="val-mid">R$ 54,10</td>
+        </tr>
+        <tr>
+          <td>Dr. Danilo — Goiânia</td>
+          <td><span class="status-dot status-active"></span>Ativo</td>
+          <td>R$ 420,97</td>
+          <td>8</td>
+          <td>15,1%</td>
+          <td class="val-mid">R$ 52,62</td>
+        </tr>
+        <tr>
+          <td>Dr. Danilo — Piracicaba</td>
+          <td><span class="status-dot status-active"></span>Ativo</td>
+          <td>R$ 275,54</td>
+          <td>4</td>
+          <td>7,8%</td>
+          <td class="val-neg">R$ 68,88</td>
+        </tr>
+        <tr>
+          <td>Campanhas #2 — SP / GO / PIR / CAM</td>
+          <td><span class="status-dot status-inactive"></span>Inativas</td>
+          <td>R$ 11,79</td>
+          <td>0</td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>TOTAL GOOGLE ADS</strong></td>
+          <td></td>
+          <td><strong>R$ 2.181,17</strong></td>
+          <td><strong>100</strong></td>
+          <td><strong>17,0%</strong></td>
+          <td><strong class="val-pos">R$ 21,81</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Rodapé -->
+<div style="text-align:center; color: var(--muted); font-size: 11px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);">
+  Gerado em 21/05/2026 · Dr. Danilo Matsunaga · Campanhas de Clínica/Consultas · Exclui infoproduto (Destrave 14D, Reposição Hormonal)
+</div>
+
+</body>
+</html>
